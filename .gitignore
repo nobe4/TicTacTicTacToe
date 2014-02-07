@@ -13,4 +13,7 @@
 *.a
 
 # User Space in Qt
-*.pro.user
+*.pro*
+
+# Temporary files
+*~
