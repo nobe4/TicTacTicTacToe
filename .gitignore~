@@ -11,6 +11,3 @@
 *.lai
 *.la
 *.a
-
-# User Space in Qt
-*.pro.user
