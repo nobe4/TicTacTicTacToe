@@ -1,6 +1,8 @@
 #ifndef BOARD_H
 #define BOARD_H
 
+#include <iostream>
+using namespace std;
 #include <vector>
 
 /**
@@ -17,7 +19,12 @@ private:
     int _w, ///< width of the matrix
         _h; ///< heigth of the matrix
 public:
-    Board(int w, int h);
+    /**
+     * @brief Board
+     * @param w initial width
+     * @param h initial height
+     */
+    Board(int w = 3, int h = 3);
 
     /**
      * @brief h
@@ -36,7 +43,7 @@ public:
      * @param j the column wanted
      * @return the value of the matrix at the line i and column j
      */
-    inline int get(int i, int j) const {return _cells[i][j];} // TODO : need to check that i and j are valid
+    int get(int i, int j) const; // TODO : need to check that i and j are valid
 };
 
 #endif // BOARD_H

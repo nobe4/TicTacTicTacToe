@@ -6,6 +6,10 @@ using namespace std;
 
 #include "board.h"
 
+/**
+ * @brief The Output class
+ * Used for all graphical output (mostly console)
+ */
 class Output
 {
 public:

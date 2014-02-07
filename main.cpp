@@ -6,9 +6,8 @@ using namespace std;
 
 int main(){
     Output o;
+    cout << "coucou" << endl;
     o.displayBoard(Board(3,3));
-
-    o.displayBoard(Board(4,6));
     return 0;
 }
 
