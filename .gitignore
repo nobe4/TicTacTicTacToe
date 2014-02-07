@@ -12,7 +12,7 @@
 *.la
 *.a
 
-# User Space in Qt
+# Qt project file
 *.pro*
 
 # Temporary files
