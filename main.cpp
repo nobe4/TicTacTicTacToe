@@ -2,12 +2,12 @@
 using namespace std;
 
 #include "output.h"
+#include "input.h"
 #include "board.h"
 
 int main(){
-    Output o;
-    cout << "coucou" << endl;
-    o.displayBoard(Board(3,3));
+    dimension d = Input::inputMatrixDimension();
+    Output::displayBoard(Board(d.w,d.h));
     return 0;
 }
 

@@ -14,7 +14,7 @@ class Output
 {
 public:
     Output();
-    void displayBoard(Board b);
+    static void displayBoard(Board b);
 
 };
 
