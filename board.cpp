@@ -12,7 +12,6 @@ Board::Board(){
     }else{
         _w = d.w;
     }
-
     if(d.h < 1){
         cout << "Error : heigth null or negative" << endl;
         _h = 3; // default value

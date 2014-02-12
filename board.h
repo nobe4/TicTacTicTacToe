@@ -15,6 +15,7 @@ using namespace std;
 class Board
 {
 private:
+
     /**
      * @brief _cells is a matrix of integer
      */
@@ -32,6 +33,7 @@ public:
      * @return the heigth of the matrix
      */
     inline int h() const {return _h;}
+
     /**
      * @brief w
      * @return the width of the matrix

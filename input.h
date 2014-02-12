@@ -15,11 +15,20 @@ public:
      * @return instance of the dimension struct
      */
     static dimension inputMatrixDimension();
+
+    /**
+     * @brief inputWinLength parse console input to get the length to win
+     * @param max is the maximal value allowed
+     * @return the length to win
+     */
+    static int inputWinLength(int max);
+
     /**
      * @brief inputAction parse input from console and return an instance of the action structure
      * @return instance of the action structure
      */
     static action inputAction();
+
 
     /**
      * @brief parseInputStringToInteger convert a string into a integer that follow rules of the game

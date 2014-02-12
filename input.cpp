@@ -29,6 +29,28 @@ dimension Input::inputMatrixDimension(){
     return d;
 }
 
+int Input::inputWinLength(int max){
+    string input;
+
+    cout << "Input the value for the length to win : ";
+    cin >> input;
+
+    parsedInt i = parseInputStringToInteger(input);
+
+    if(i.type == OK){
+        // the value is > 0
+        if(i.value > max){
+            cout << "Error : Value too big." << endl;
+        }else{
+            cout << "parsed value for the length to win : " << i.value;
+            return i.value;
+        }
+    }else{
+        cout << "Error : Not a number." << endl;
+    }
+    return -1; // bad input
+}
+
 action Input::inputAction(){
     action a = {ERROR,{-1,-1}};
 

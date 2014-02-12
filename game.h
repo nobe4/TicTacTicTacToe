@@ -9,10 +9,14 @@
 class Game
 {
 private:
-   Board *board; // playing board
-   vector<action> history; // history of the played moves
+   Board *_board; ///< playing board
+   vector<action> _history; ///< history of the played moves
+   int _winLength; ///< lenght of alignment for winning
 
-   // create a player/machine ?
+   /**
+    * @brief The CURR_PLAYER enum is an enum to check whether it's the human turn or the machine turn
+    */
+   enum CURR_PLAYER{HUMAN,MACHINE};
 
 public:
     Game();
@@ -20,6 +24,10 @@ public:
      * @brief Initialisation initialize the game with board size and first player
      */
     void Initialisation();
+
+    void gameLoop();
+
+    void newMove();
 
     ~Game();
 };
