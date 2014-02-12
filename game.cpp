@@ -22,11 +22,34 @@ void Game::Initialisation(){
 }
 
 void Game::gameLoop(){
-
+    while(this->newMove() == PLAY){
+        Output::displayBoard(this->_board);
+    }
 }
 
-void Game::newMove(){
+ACTION_TYPE Game::newMove(){
+    cout << "New move : " << endl;
+    action a = Input::inputAction();
 
+    if(a.type == QUIT){
+        cout << "No new move : quitting game..." << endl;
+    }else if(a.type == ERROR){
+        cout << "Error in input" << endl;
+    }else if(a.type == PLAY){
+        playMove(a.c);
+    }else{
+        cout << "Error : invalid action" << endl;
+        return ERROR;
+    }
+
+    return a.type;
+}
+
+
+void Game::playMove(cell c){
+    // use c to place a new move on the board
+    this->_board->set(c.x,c.y,1);
+    // verifications ?
 }
 
 Game::~Game(){

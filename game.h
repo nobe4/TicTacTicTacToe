@@ -25,9 +25,20 @@ public:
      */
     void Initialisation();
 
+    /**
+     * @brief gameLoop is the main function of the game : turns will be played in
+     */
     void gameLoop();
 
-    void newMove();
+    /**
+     * @brief newMove parse the move input and decide to play a move, to surrender or to quit the game
+     */
+     ACTION_TYPE newMove();
+
+    /**
+     * @brief playMove act to play a move whether it's the machine or human turn
+     */
+    void playMove(cell c);
 
     ~Game();
 };

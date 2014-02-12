@@ -47,6 +47,14 @@ public:
      * @return the value of the matrix at the line i and column j
      */
     int get(int i, int j) const; // TODO : need to check that i and j are valid
+
+    /**
+     * @brief set
+     * @param i the line wanted
+     * @param j the column wanted
+     * @param v the value wanted
+     */
+    void set(int i, int j, int v); // todo : check if i and j are valid
 };
 
 #endif // BOARD_H

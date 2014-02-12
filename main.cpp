@@ -9,6 +9,7 @@ using namespace std;
 int main(){
         Game g;
         g.Initialisation();
+        g.gameLoop();
 
 //        dimension d = Input::inputMatrixDimension();
 //        Output::displayBoard(Board(d.w,d.h));

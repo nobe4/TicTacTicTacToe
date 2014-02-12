@@ -51,3 +51,7 @@ int Board::get(int i, int j) const{
 
     return this->_cells[i][j];
 }
+
+void Board::set(int i, int j, int v){
+    this->_cells[i][j] = v;
+}
