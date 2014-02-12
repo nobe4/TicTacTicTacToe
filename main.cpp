@@ -4,11 +4,15 @@ using namespace std;
 #include "output.h"
 #include "input.h"
 #include "board.h"
+#include "game.h"
 
 int main(){
-    //    dimension d = Input::inputMatrixDimension();
-    //    Output::displayBoard(Board(d.w,d.h));
-        Input::inputAction();
+        Game g;
+        g.Initialisation();
+
+//        dimension d = Input::inputMatrixDimension();
+//        Output::displayBoard(Board(d.w,d.h));
+//        Input::inputAction();
 //    Input::parseInputStringToInteger("23");
 //    Input::parseInputStringToInteger("23.5");
 //    Input::parseInputStringToInteger("-23");

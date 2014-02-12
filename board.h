@@ -3,7 +3,10 @@
 
 #include <iostream>
 using namespace std;
+
 #include <vector>
+
+#include "input.h"
 
 /**
  * @brief The Board class
@@ -20,11 +23,9 @@ private:
         _h; ///< heigth of the matrix
 public:
     /**
-     * @brief Board
-     * @param w initial width
-     * @param h initial height
+     * @brief Board constructor
      */
-    Board(int w = 3, int h = 3);
+    Board();
 
     /**
      * @brief h

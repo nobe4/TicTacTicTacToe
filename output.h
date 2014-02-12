@@ -14,7 +14,7 @@ class Output
 {
 public:
     Output();
-    static void displayBoard(Board b);
+    static void displayBoard(const Board *b);
 
 };
 

@@ -1,26 +1,31 @@
 #include "board.h"
 
-Board::Board(int w, int h){
-    if(w < 1){
+Board::Board(){
+    cout << "Initalisation of the Board" << endl;
+
+    //Input the dimention of the board
+    dimension d = Input::inputMatrixDimension();
+
+    if(d.w < 1){
         cout << "Error : width null or negative" << endl;
         _w = 3; // default value
     }else{
-        _w = w;
+        _w = d.w;
     }
 
-    if(h < 1){
+    if(d.h < 1){
         cout << "Error : heigth null or negative" << endl;
         _h = 3; // default value
     }else{
-        _h = h;
+        _h = d.h;
     }
 
-    _cells.resize(h);
-    for(int i = 0; i < h; i ++){
-        _cells[i].resize(w);
-        for(int j = 0; j < w; j ++){
+    _cells.resize(_h);
+    for(int i = 0; i < _h; i ++){
+        _cells[i].resize(_w);
+        for(int j = 0; j < _w; j ++){
             cout << "[" << i << ":" << j << "] = " << i+j << endl;
-            _cells[i][j] = i+j;
+            _cells[i][j] = -1;
         }
     }
 }

@@ -2,12 +2,22 @@
 
 Output::Output(){}
 
-void Output::displayBoard(Board b)
+void Output::displayBoard(const Board *b)
 {
-    cout << "Display of a " << b.h() << "x" << b.w() << " matrix : " << endl;
-    for(int i = 0; i < b.h(); i ++){
-        for(int j = 0; j < b.w(); j ++){
-            cout << b.get(i,j) << "\t";
+    int t = 0;
+    cout << "Display of a " << b->h() << "x" << b->w() << " matrix : " << endl;
+    cout << "y/x\t";
+    for(int j = 0; j < b->w(); j ++){
+        cout << j << "\t";
+    }
+    cout << endl;
+
+    for(int i = 0; i < b->h(); i ++){
+        cout << i << "\t";
+        for(int j = 0; j < b->w(); j ++){
+            t = b->get(i,j);
+            if(t == -1) cout << "_\t";
+            else cout << t << "\t";
         }
         cout << "\n";
     }
