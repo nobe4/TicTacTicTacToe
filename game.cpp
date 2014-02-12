@@ -18,6 +18,7 @@ void Game::Initialisation(){
     _winLength = Input::inputWinLength(min);
 
     // choice of the first player
+    // by default it's the human
 }
 
 void Game::gameLoop(){

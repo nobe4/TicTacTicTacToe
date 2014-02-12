@@ -10,22 +10,35 @@ Input::Input()
 }
 
 dimension Input::inputMatrixDimension(){
-    int w = 0;
-    int h = 0;
-    dimension d;
+    dimension d = {3,3}; // default values
+    string s;
 
     cout << "Choose a width for your matrix : ";
-    cin >> w;
-    cout << "Choose a heigth for your matrix : ";
-    cin >> h;
+    cin >> s;
+    parsedInt i = parseInputStringToInteger(s);
+    if(i.type == OK){
+        if(i.value < d.w){
+            cout << "Value too low : w = 3" << endl;
+        }else{
+            d.w = i.value;
+        }
+        cout << "Choose a heigth for your matrix : ";
+        cin >> s;
+        i = parseInputStringToInteger(s);
+        if(i.type == OK){
+            if(i.value < d.h){
+                cout << "Value too low : h = 3" << endl;
+            }else{
+                d.h = i.value;
+            }
 
-    // check for input integrity :
-    // (1) no negative number
-    // (2) no float number
-    // ...
-
-    d.w = w;
-    d.h = h;
+            cout << "Inputed : " << d.w << " " << d.h << endl;
+        }else{
+            cout << "Error in h input : h = 3" << endl;
+        }
+    }else{
+        cout << "Error in w input : w = 3" << endl;
+    }
     return d;
 }
 
@@ -40,15 +53,20 @@ int Input::inputWinLength(int max){
     if(i.type == OK){
         // the value is > 0
         if(i.value > max){
-            cout << "Error : Value too big." << endl;
+            cout << "Error : Value too big : return " << max << endl;
+            return max;
+        }else if(i.value < 3){
+            cout << "Error : Value too low : return " << max << endl;
+            return max;
         }else{
-            cout << "parsed value for the length to win : " << i.value;
+            cout << "Parsed value for the length to win : " << i.value << endl;
             return i.value;
         }
     }else{
-        cout << "Error : Not a number." << endl;
+        cout << "Error : Not a number : return" << max << endl;
     }
-    return -1; // bad input
+
+    return max; // bad input : default size : max
 }
 
 action Input::inputAction(){
