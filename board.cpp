@@ -26,7 +26,7 @@ Board::Board(int w, int h){
 }
 
 int Board::get(int i, int j) const{
-    cout << "Try access to : [" << i << ":" << j << "]" << endl;
+//    cout << "Try access to : [" << i << ":" << j << "]" << endl;
 
 
     if(i < 0){
