@@ -2,8 +2,7 @@
 
 Output::Output(){}
 
-void Output::displayBoard(const Board *b)
-{
+void Output::displayBoard(const Board *b){
     int t = 0;
     cout << "Display of a " << b->h() << "x" << b->w() << " matrix : " << endl;
     cout << "y/x\t";
@@ -17,7 +16,8 @@ void Output::displayBoard(const Board *b)
         for(int j = 0; j < b->w(); j ++){
             t = b->get(i,j);
             if(t == -1) cout << "_\t";
-            else cout << t << "\t";
+            else if(t == 0) cout <<"O\t";
+            else cout <<"X\t";
         }
         cout << "\n";
     }

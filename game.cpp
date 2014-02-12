@@ -22,34 +22,51 @@ void Game::Initialisation(){
 }
 
 void Game::gameLoop(){
-    while(this->newMove() == PLAY){
+    while(this->newMove() != QUIT){
         Output::displayBoard(this->_board);
     }
+
+    cout << "Project realised by" << endl;
+    cout << "\tVictor Haffreingue" << endl;
+    // add your name here
+    cout << "\t(c) 2014" << endl;
 }
 
 ACTION_TYPE Game::newMove(){
-    cout << "New move : " << endl;
+    cout << "##################################################" << endl;
+    cout << "New move for the ";
+    if(_currentPlayer == HUMAN) cout << "human" << endl;
+    else cout << "machine" << endl;
     action a = Input::inputAction();
 
-    if(a.type == QUIT){
-        cout << "No new move : quitting game..." << endl;
-    }else if(a.type == ERROR){
-        cout << "Error in input" << endl;
-    }else if(a.type == PLAY){
-        playMove(a.c);
+    if(a.type == QUIT){ // if action is quitting
+        cout << "Thanks for playing !" << endl;
+    }else if(a.type == ERROR){ // if there is an error in the action
+        cout << "/!\ /!\\ Error in input" << endl;
+    }else if(a.type == PLAY){ // if the action is playing
+        if(a.c.x >= this->_board->w() || a.c.y >= this->_board->h()){ // if the cell is not inside the board
+            cout << "/!\ /!\\ Error : cell out of the matrix" << endl;
+            return ERROR;
+        }else{
+            if(this->_board->get(a.c.x,a.c.y) != -1){ // if the cell is not empty
+                cout << "/!\ /!\\ Error : cell is not empty" << endl;
+                return ERROR;
+            }else{
+                if(_currentPlayer == HUMAN){ // if it is the human turn
+                    this->_board->set(a.c.x,a.c.y,1);
+                    _currentPlayer = MACHINE;
+                }else{ // if this is the machine turn
+                    this->_board->set(a.c.x,a.c.y,0);
+                    _currentPlayer = HUMAN;
+                }
+            }
+        }
     }else{
-        cout << "Error : invalid action" << endl;
+        cout << "/!\ /!\\ Error : invalid action" << endl;
         return ERROR;
     }
 
     return a.type;
-}
-
-
-void Game::playMove(cell c){
-    // use c to place a new move on the board
-    this->_board->set(c.x,c.y,1);
-    // verifications ?
 }
 
 Game::~Game(){

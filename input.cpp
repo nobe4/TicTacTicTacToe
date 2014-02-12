@@ -34,10 +34,10 @@ dimension Input::inputMatrixDimension(){
 
             cout << "Inputed : " << d.w << " " << d.h << endl;
         }else{
-            cout << "Error in h input : h = 3" << endl;
+            cout << "/!\\ Error in h input : h = 3" << endl;
         }
     }else{
-        cout << "Error in w input : w = 3" << endl;
+        cout << "/!\\ Error in w input : w = 3" << endl;
     }
     return d;
 }
@@ -53,17 +53,17 @@ int Input::inputWinLength(int max){
     if(i.type == OK){
         // the value is > 0
         if(i.value > max){
-            cout << "Error : Value too big : return " << max << endl;
+            cout << "/!\\ Error : Value too big : return " << max << endl;
             return max;
         }else if(i.value < 3){
-            cout << "Error : Value too low : return " << max << endl;
+            cout << "/!\\ Error : Value too low : return " << max << endl;
             return max;
         }else{
             cout << "Parsed value for the length to win : " << i.value << endl;
             return i.value;
         }
     }else{
-        cout << "Error : Not a number : return" << max << endl;
+        cout << "/!\\ Error : Not a number : return" << max << endl;
     }
 
     return max; // bad input : default size : max
@@ -78,7 +78,7 @@ action Input::inputAction(){
     cout << "Choose an action to performe : (Q)UIT/(P)LAY :";
     cin >> s;
 
-    if(s == "P" || s == "PLAY"){
+    if(s == "P" || s == "PLAY" || s == "p" || s == "play"){
         cout << "Input x for your play : ";
         cin >> s;
         i = parseInputStringToInteger(s);
@@ -93,16 +93,16 @@ action Input::inputAction(){
                 a.c.y = i.value;
                 cout << "Inputed : " << a.c.x << " " << a.c.y << endl;
             }else{
-                cout << "Error in y input, aborting..." << endl;
+                cout << "/!\\ Error in y input, aborting..." << endl;
             }
         }else{
-            cout << "Error in x input, aborting..." << endl;
+            cout << "/!\\ Error in x input, aborting..." << endl;
         }
-    }else if(s == "QUIT" || s == "Q"){
-        cout << "Quitting Game ..."<< endl;
+    }else if(s == "QUIT" || s == "Q" || s == "quit" || s == "q"){
+        cout << "Quitting game ..."<< endl;
         a.type = QUIT;
     }else{
-        cout << "Input unknown, aborting...";
+        cout << "Input unknown, aborting..." << endl;
     }
 
     return a;
@@ -116,12 +116,12 @@ parsedInt Input::parseInputStringToInteger(const string input){
     i.value = 0;
 
     if (!(stream >> n)){ // parsing string to int
-        cout << "Error parsing : Not a Number" << endl;
+        cout << "/!\\ Error parsing : Not a Number" << endl;
         i.type = NNUM;
     }else{
         cout << "Parsed int : " << n << endl;
         if(n < 0){
-            cout << "Error : negative value" << endl;
+            cout << "/!\\ Error : negative value" << endl;
             i.type = NEG;
         }else{
             i.type = OK;

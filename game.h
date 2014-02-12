@@ -17,6 +17,7 @@ private:
     * @brief The CURR_PLAYER enum is an enum to check whether it's the human turn or the machine turn
     */
    enum CURR_PLAYER{HUMAN,MACHINE};
+   CURR_PLAYER _currentPlayer; ///< current player
 
 public:
     Game();
@@ -34,11 +35,6 @@ public:
      * @brief newMove parse the move input and decide to play a move, to surrender or to quit the game
      */
      ACTION_TYPE newMove();
-
-    /**
-     * @brief playMove act to play a move whether it's the machine or human turn
-     */
-    void playMove(cell c);
 
     ~Game();
 };

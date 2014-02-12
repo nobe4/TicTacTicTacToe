@@ -7,13 +7,13 @@ Board::Board(){
     dimension d = Input::inputMatrixDimension();
 
     if(d.w < 1){
-        cout << "Error : width null or negative" << endl;
+        cout << "/!\\ Error : width null or negative" << endl;
         _w = 3; // default value
     }else{
         _w = d.w;
     }
     if(d.h < 1){
-        cout << "Error : heigth null or negative" << endl;
+        cout << "/!\\ Error : heigth null or negative" << endl;
         _h = 3; // default value
     }else{
         _h = d.h;
@@ -34,18 +34,18 @@ int Board::get(int i, int j) const{
 
 
     if(i < 0){
-        cout << "Error : line null or negative" << endl;
+        cout << "/!\\ Error : line null or negative" << endl;
         return -1;
     }else if(i > this->_h){
-        cout << "Error : line too big" << endl;
+        cout << "/!\\ Error : line too big" << endl;
         return -1;
     }
 
     if(j < 0){
-        cout << "Error : column null or negative" << endl;
+        cout << "/!\\ Error : column null or negative" << endl;
         return -1;
     }else if(j > this->_w){
-        cout << "Error : column too big" << endl;
+        cout << "/!\\ Error : column too big" << endl;
         return -1;
     }
 
