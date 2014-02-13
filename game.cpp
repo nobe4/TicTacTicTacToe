@@ -27,6 +27,10 @@ void Game::gameLoop(){
     while(cont&& this->newMove() != QUIT){
         Output::displayBoard(this->_board);
 
+        if(_board->detectEndgame() != -1){
+            cout << "End game" << endl;
+        }
+
         if(this->_history.size() == (unsigned int) this->_board->h()*this->_board->w()){
             cout << "End of game with a draw because no more space is available !" << endl;
             cont = false;
