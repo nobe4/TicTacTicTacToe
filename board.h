@@ -9,6 +9,11 @@ using namespace std;
 #include "input.h"
 
 /**
+ * @brief dPoint struct define a x/y difference for patern matching
+ */
+typedef struct _{int dx,dy;}dPoint;
+
+/**
  * @brief The Board class
  * Define the matrix used for playing tictactoe but with arbitrary size
  */
@@ -22,6 +27,15 @@ private:
     std::vector<std::vector<int> > _cells;
     int _w, ///< width of the matrix
         _h; ///< heigth of the matrix
+
+    int _patternSize; ///< size of the patterns
+
+    // the patterns for endgame detection
+    vector<dPoint> _horizontalPattern;
+    vector<dPoint> _verticalPattern;
+    vector<dPoint> _diagoRigthPattern;   // up left to bottom rigth
+    vector<dPoint> _diagoLeftPattern;    // up rigth to bottom left
+
 public:
     /**
      * @brief Board constructor
@@ -55,6 +69,27 @@ public:
      * @param v the value wanted
      */
     void set(int i, int j, int v); // todo : check if i and j are valid
+
+    /**
+     * @brief detectEndgame verify if one of the two player is winning the game
+     * @param size is the min length to win
+     * @return the number of the winner 0/1
+     */
+    int detectEndgame();
+
+    /**
+     * @brief isCellWinning check if a cell is winning over the 4 patterns, will be called by detectEndgame()
+     * @param x
+     * @param y
+     * @return true if the current cell is winning
+     */
+    bool isCellWinning(int x, int y);
+
+    /**
+     * @brief createPatterns create patterns that will be used to detect endgame
+     * @param size is the min length to win
+     */
+    void createPatterns(int patternSize);
 };
 
 #endif // BOARD_H

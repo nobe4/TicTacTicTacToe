@@ -30,7 +30,7 @@ Board::Board(){
 }
 
 int Board::get(int i, int j) const{
-//    cout << "Try access to : [" << i << ":" << j << "]" << endl;
+    //    cout << "Try access to : [" << i << ":" << j << "]" << endl;
 
 
     if(i < 0){
@@ -49,9 +49,69 @@ int Board::get(int i, int j) const{
         return -1;
     }
 
+    //    cout << this->_cells[i][j] << endl;
+
     return this->_cells[i][j];
 }
 
 void Board::set(int i, int j, int v){
     this->_cells[i][j] = v;
+}
+
+int Board::detectEndgame(){
+    // need to detect horizontally between 0 and size - paternSize
+    return
+}
+
+bool Board::isCellWinning(int x, int y){
+    // in this function all cell will be call, need to check over the position to determine if we apply the 4 patterns
+    // horizontal rule : x < this->w() - _patternSize
+    // vertical rule : y < this->h() - _patternSize
+    // diagoR rule : x < this->w() - _patternSize && y < this->h() - _patternSize
+    // diagoL rule : x < this->w() - _patternSize && y > _patternSize
+}
+
+void Board::createPatterns(int patternSize){
+    cout << "Create the patterns for endgame matching" << endl;
+    // construct the 4 patterns
+    // a pattern is a list of additive integer to parse every cell in the possible solution
+
+    //    example for a size of 3 :
+    //    [   [0]
+    //        [1]
+    //        [2]       ]
+
+    //    [   [0][1][2] ]
+
+    //    [ [0]
+    //         [1]
+    //            [2]   ]
+
+    //    [       [2]
+    //         [1]
+    //      [0]         ]
+
+    _patternSize = patternSize;
+
+    _horizontalPattern.resize(_patternSize);
+    _verticalPattern.resize(_patternSize);
+    _diagoRigthPattern.resize(_patternSize);
+    _diagoLeftPattern.resize(_patternSize);
+
+    for(int i = 0; i < _patternSize; i ++){
+        _horizontalPattern.at(i) = {i,0};
+        _verticalPattern.at(i) = {0,i};
+        _diagoRigthPattern.at(i) = {i,i};
+        _diagoLeftPattern.at(i) = {_patternSize - i - 1, i};
+    }
+
+    for(int i = 0; i < _patternSize; i ++)
+        cout << _horizontalPattern.at(i).dx << " " << _horizontalPattern.at(i).dy << endl;
+    for(int i = 0; i < _patternSize; i ++)
+        cout << _verticalPattern.at(i).dx << " " << _verticalPattern.at(i).dy << endl;
+    for(int i = 0; i < _patternSize; i ++)
+        cout << _diagoRigthPattern.at(i).dx << " " << _diagoRigthPattern.at(i).dy << endl;
+    for(int i = 0; i < _patternSize; i ++)
+        cout << _diagoLeftPattern.at(i).dx << " " << _diagoLeftPattern.at(i).dy << endl;
+
 }

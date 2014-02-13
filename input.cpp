@@ -63,7 +63,7 @@ int Input::inputWinLength(int max){
             return i.value;
         }
     }else{
-        cout << "/!\\ Error : Not a number : return" << max << endl;
+        cout << "/!\\ Error : Not a number : return " << max << endl;
     }
 
     return max; // bad input : default size : max
@@ -116,7 +116,7 @@ parsedInt Input::parseInputStringToInteger(const string input){
     i.value = 0;
 
     if (!(stream >> n)){ // parsing string to int
-        cout << "/!\\ Error parsing : Not a Number" << endl;
+        cout << "/!\\ Error parsing : Not a Number " << endl;
         i.type = NNUM;
     }else{
         cout << "Parsed int : " << n << endl;
