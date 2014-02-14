@@ -73,7 +73,7 @@ bool Board::isCellWinning(int x, int y){
     // horizontal rule : x < this->w() - _patternSize
     // vertical rule : y < this->h() - _patternSize
     // diagoR rule : x < this->w() - _patternSize && y < this->h() - _patternSize
-    // diagoL rule : x < this->w() - _patternSize && y > _patternSize
+    // diagoL rule : x < this->w() - _patternSize && y < this->h() - _patternSize
 
     int value = this->get(x,y);
 
@@ -81,11 +81,12 @@ bool Board::isCellWinning(int x, int y){
 //        cout << "Cell " << x << " " << y  <<  " empty, passing ... "<< endl;
         return false;
     }
+
     bool winning = false;
     int i = 0;
 
     // horizontal check
-    if(x < this->w() - _patternSize + 1){
+    if(y < this->h() - _patternSize + 1){
         cout << "Horizontal check : " << x << " " << y <<endl ;
         winning = true;
         i = 0;
@@ -97,7 +98,51 @@ bool Board::isCellWinning(int x, int y){
             }
             ++i;
         }while(i < this->_patternSize && winning == true);
-//        cout << winning << endl;
+    }
+
+    // vertical check
+    if(x < this->w() - _patternSize + 1 && winning == false){
+        cout << "Vertical check : " << x << " " << y <<endl ;
+        winning = true;
+        i = 0;
+        do{
+            cout <<             x + _verticalPattern.at(i).dx << " : " << y + _verticalPattern.at(i).dy     << " => "
+                 << this->get(  x + _verticalPattern.at(i).dx ,           y + _verticalPattern.at(i).dy)    << " ?= " << value << endl;
+            if(this->get(x + _verticalPattern.at(i).dx , y + _verticalPattern.at(i).dy) != value){
+                winning = false;
+            }
+            ++i;
+        }while(i < this->_patternSize && winning == true);
+    }
+
+    // diagoR check
+    if(x < this->w() - _patternSize + 1 && y < this->h() - _patternSize + 1 && winning == false){
+        cout << "Diago Rigth check : " << x << " " << y <<endl ;
+        winning = true;
+        i = 0;
+        do{
+            cout <<             x + _diagoRigthPattern.at(i).dx << " : " << y + _diagoRigthPattern.at(i).dy     << " => "
+                 << this->get(  x + _diagoRigthPattern.at(i).dx ,           y + _diagoRigthPattern.at(i).dy)    << " ?= " << value << endl;
+            if(this->get(x + _diagoRigthPattern.at(i).dx , y + _diagoRigthPattern.at(i).dy) != value){
+                winning = false;
+            }
+            ++i;
+        }while(i < this->_patternSize && winning == true);
+    }
+
+    // diagoL check
+    if(x < this->w() - _patternSize + 1 && y < this->h() - _patternSize + 1 && winning == false){
+        cout << "Diago Left check : " << x << " " << y <<endl ;
+        winning = true;
+        i = 0;
+        do{
+            cout <<             x + _diagoLeftPattern.at(i).dx << " : " << y + _diagoLeftPattern.at(i).dy     << " => "
+                 << this->get(  x + _diagoLeftPattern.at(i).dx ,           y + _diagoLeftPattern.at(i).dy)    << " ?= " << value << endl;
+            if(this->get(x + _diagoLeftPattern.at(i).dx , y + _diagoLeftPattern.at(i).dy) != value){
+                winning = false;
+            }
+            ++i;
+        }while(i < this->_patternSize && winning == true);
     }
 
     return winning;
