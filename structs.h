@@ -14,6 +14,11 @@ typedef struct _dimension{
 enum ACTION_TYPE{QUIT,PLAY,ERROR/*,SURRENDER*/};
 
 /**
+ * @brief The Player enum is an enum to check whether it's the human turn or the machine turn
+ */
+enum Player{HUMAN, MACHINE, NONE};
+
+/**
  * @brief The cell structure handle position of a cell in the matrix (does not handle integrity verifications)
  */
 typedef struct _cell{

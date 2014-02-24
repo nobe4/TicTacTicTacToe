@@ -24,27 +24,27 @@ Board::Board(){
         _cells[i].resize(_w);
         for(int j = 0; j < _w; j ++){
            // cout << "[" << i << ":" << j << "] = " << i+j << endl;
-            _cells[i][j] = -1;
+            _cells[i][j] = NONE;
         }
     }
 }
 
-int Board::get(int i, int j) const{
+Player Board::get(int i, int j) const{
     //    cout << "Try access to : [" << i << ":" << j << "]" << endl;
 
     if(i < 0){
         cout << "/!\\ Error : line null or negative" << endl;
-        return -1;
+        return NONE;
     }else if(i > this->_h){
         cout << "/!\\ Error : line too big" << endl;
-        return -1;
+        return NONE;
     }
     if(j < 0){
         cout << "/!\\ Error : column null or negative" << endl;
-        return -1;
+        return NONE;
     }else if(j > this->_w){
         cout << "/!\\ Error : column too big" << endl;
-        return -1;
+        return NONE;
     }
 
     //    cout << this->_cells[i][j] << endl;
@@ -52,7 +52,7 @@ int Board::get(int i, int j) const{
     return this->_cells[i][j];
 }
 
-void Board::set(int i, int j, int v){
+void Board::set(int i, int j, Player v){
     this->_cells[i][j] = v;
 }
 

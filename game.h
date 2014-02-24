@@ -13,11 +13,7 @@ private:
    vector<action> _history; ///< history of the played moves
    int _winLength; ///< lenght of alignment for winning
 
-   /**
-    * @brief The CURR_PLAYER enum is an enum to check whether it's the human turn or the machine turn
-    */
-   enum CURR_PLAYER{HUMAN,MACHINE};
-   CURR_PLAYER _currentPlayer; ///< current player
+   Player _currentPlayer; ///< current player
 
 public:
     Game();

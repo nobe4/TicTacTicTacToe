@@ -64,12 +64,12 @@ ACTION_TYPE Game::newMove(){
                 cout << "/!\\ Error : cell out of the matrix" << endl;
                 return ERROR;
             }else{
-                if(this->_board->get(a.c.x,a.c.y) != -1){ // if the cell is not empty
+                if(this->_board->get(a.c.x,a.c.y) != NONE){ // if the cell is not empty
                     cout << "/!\\ Error : cell is not empty" << endl;
                     return ERROR;
                 }else{
                     this->_history.push_back(a);
-                    this->_board->set(a.c.x,a.c.y,1);
+                    this->_board->set(a.c.x, a.c.y, HUMAN);
                     _currentPlayer = MACHINE;
                 }
             }
@@ -80,7 +80,7 @@ ACTION_TYPE Game::newMove(){
     }else{
         cout << "machine" << endl;
         a = nextAction();
-        this->_board->set(a.c.x,a.c.y,0);
+        this->_board->set(a.c.x, a.c.y, MACHINE);
         _currentPlayer = HUMAN;
     }
     
@@ -97,7 +97,7 @@ action Game::random() {
     bool foundEmpty = false;
     for (int x = 0; x < _board->h() && !foundEmpty; ++x) {
         for (int y = 0; y < _board->w() && !foundEmpty; ++y) {
-            if (_board->get(x, y) == -1) {
+            if (_board->get(x, y) == NONE) {
                 a.c.x = x;
                 a.c.y = y;
                 a.type = PLAY;

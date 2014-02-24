@@ -24,7 +24,7 @@ private:
     /**
      * @brief _cells is a matrix of integer
      */
-    std::vector<std::vector<int> > _cells;
+    std::vector<std::vector<Player> > _cells;
     int _w, ///< width of the matrix
         _h; ///< heigth of the matrix
 
@@ -60,7 +60,7 @@ public:
      * @param j the column wanted
      * @return the value of the matrix at the line i and column j
      */
-    int get(int i, int j) const; // TODO : need to check that i and j are valid
+    Player get(int i, int j) const; // TODO : need to check that i and j are valid
 
     /**
      * @brief set
@@ -68,7 +68,7 @@ public:
      * @param j the column wanted
      * @param v the value wanted
      */
-    void set(int i, int j, int v); // todo : check if i and j are valid
+    void set(int i, int j, Player v); // todo : check if i and j are valid
 
     /**
      * @brief detectEndgame verify if one of the two player is winning the game
