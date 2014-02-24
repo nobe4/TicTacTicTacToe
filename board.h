@@ -73,7 +73,7 @@ public:
     /**
      * @brief detectEndgame verify if one of the two player is winning the game
      * @param size is the min length to win
-     * @return the number of the winner 0/1
+     * @return the number of the winner 0/1, or -1 in case the game hasn't reach the end.
      */
     int detectEndgame();
 

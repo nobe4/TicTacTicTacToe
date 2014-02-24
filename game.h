@@ -35,6 +35,17 @@ public:
      * @brief newMove parse the move input and decide to play a move, to surrender or to quit the game
      */
      ACTION_TYPE newMove();
+    
+    /**
+     * @brief returns the next action to play by the current player
+     *
+     */
+    action nextAction();
+    
+    /**
+     * @brief returns a random (and correct) action to play by the current player
+     */
+    action random();
 
     ~Game();
 };

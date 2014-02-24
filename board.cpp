@@ -23,7 +23,7 @@ Board::Board(){
     for(int i = 0; i < _h; i ++){
         _cells[i].resize(_w);
         for(int j = 0; j < _w; j ++){
-            cout << "[" << i << ":" << j << "] = " << i+j << endl;
+           // cout << "[" << i << ":" << j << "] = " << i+j << endl;
             _cells[i][j] = -1;
         }
     }
@@ -62,6 +62,7 @@ int Board::detectEndgame(){
         for(int j  = 0; j < this->h(); j ++){
             if(this->isCellWinning(i,j)){
                 cout << "The player : " << this->get(i,j) << " win the game"<< endl;
+                return this->get(i,j);
             }
         }
     }
