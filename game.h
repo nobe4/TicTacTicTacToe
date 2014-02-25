@@ -21,6 +21,11 @@ private:
      * @brief returns the value of the board, or its derived possibilities, based on depth value
      */
     int minmax(int depth);
+    
+    /**
+     * @brief switches _currentPlayer from MACHINE to human, and the opposite.
+     */
+    inline void switchPlayer() {_currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;};
 
 public:
     Game();

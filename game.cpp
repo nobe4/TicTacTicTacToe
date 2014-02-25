@@ -23,6 +23,7 @@ void Game::Initialisation(){
     // by default it's the human
     
     minmaxDepth = std::max(_board->h(), _board->w()) + 3;//make sure we will find the best solution.
+    _currentPlayer = MACHINE;
 }
 
 void Game::gameLoop(){
@@ -52,12 +53,11 @@ void Game::gameLoop(){
 
 ACTION_TYPE Game::newMove(){
     cout << "##################################################" << endl;
-    cout << "New move for the ";
+    cout << "New move for the " << str(_currentPlayer) << endl;
     
     action a;
     
     if(_currentPlayer == HUMAN) {
-        cout << "human" << endl;
         a = Input::inputAction();
         
         if(a.type == QUIT){ // if action is quitting
@@ -67,26 +67,32 @@ ACTION_TYPE Game::newMove(){
         }else if(a.type == PLAY){ // if the action is playing
             if(a.c.x >= this->_board->w() || a.c.y >= this->_board->h()){ // if the cell is not inside the board
                 cout << "/!\\ Error : cell out of the matrix" << endl;
-                return ERROR;
+                a.type = ERROR;
+//                return ERROR;
             }else{
                 if(this->_board->get(a.c.x,a.c.y) != NONE){ // if the cell is not empty
                     cout << "/!\\ Error : cell is not empty" << endl;
-                    return ERROR;
-                }else{
-                    this->_history.push_back(a);
-                    this->_board->set(a.c.x, a.c.y, HUMAN);
-                    _currentPlayer = MACHINE;
+                    a.type = ERROR;
+//                    return ERROR;
                 }
+//                else{
+//                    this->_history.push_back(a);
+//                    this->_board->set(a.c.x, a.c.y, HUMAN);
+//                    _currentPlayer = MACHINE;
+//                }
             }
         }else{
             cout << "/!\\ Error : invalid action" << endl;
             return ERROR;
         }
     }else{
-        cout << "machine" << endl;
         a = nextAction();
-        this->_board->set(a.c.x, a.c.y, MACHINE);
-        _currentPlayer = HUMAN;
+    }
+    
+    if (a.type == PLAY) {
+        this->_history.push_back(a);
+        this->_board->set(a.c.x, a.c.y, _currentPlayer);
+        switchPlayer();
     }
     
     return a.type;
@@ -160,7 +166,7 @@ action Game::minmax() {
                 
                 // Play
                 _board->set(x, y, _currentPlayer);
-                _currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;//switch player
+                switchPlayer();
                 
                 // Evaluate
                 int value = minmax(minmaxDepth);
@@ -176,7 +182,7 @@ action Game::minmax() {
                 
                 // Get back to former state
                 _board->set(x, y, NONE);
-                _currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;//switch player
+                switchPlayer();
             }
         }
     }
@@ -223,7 +229,7 @@ int Game::minmax(int depth) {
                     
                     // Play
                     _board->set(x, y, _currentPlayer);
-                    _currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;//switch player
+                    switchPlayer();
                     
                     // Evaluate
                     int value = minmax(depth - 1);
@@ -239,7 +245,7 @@ int Game::minmax(int depth) {
                     
                     // Get back to former state
                     _board->set(x, y, NONE);
-                    _currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;//switch player
+                    switchPlayer();
                 }
             }
         }
