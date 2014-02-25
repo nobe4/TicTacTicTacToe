@@ -75,7 +75,7 @@ public:
      * @param size is the min length to win
      * @return the number of the winner 0/1, or -1 in case the game hasn't reach the end.
      */
-    int detectEndgame();
+    Player detectEndgame();
 
     /**
      * @brief isCellWinning check if a cell is winning over the 4 patterns, will be called by detectEndgame()

@@ -15,8 +15,8 @@ void Output::displayBoard(const Board *b){
         cout << i << "\t";
         for(int j = 0; j < b->w(); j ++){
             t = b->get(i,j);
-            if(t == -1) cout << "_\t";
-            else if(t == 0) cout <<"O\t";
+            if(t == NONE) cout << "_\t";
+            else if(t == HUMAN) cout <<"O\t";
             else cout <<"X\t";
         }
         cout << "\n";

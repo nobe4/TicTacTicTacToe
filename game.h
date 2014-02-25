@@ -9,11 +9,18 @@
 class Game
 {
 private:
-   Board *_board; ///< playing board
-   vector<action> _history; ///< history of the played moves
-   int _winLength; ///< lenght of alignment for winning
+    int minmaxDepth; ///< depth used by minmax algorithm.
+    Board *_board; ///< playing board
+    vector<action> _history; ///< history of the played moves
+    int _winLength; ///< lenght of alignment for winning
+    int numberOfMinMaxFunctionCalls;
 
-   Player _currentPlayer; ///< current player
+    Player _currentPlayer; ///< current player
+    
+    /**
+     * @brief returns the value of the board, or its derived possibilities, based on depth value
+     */
+    int minmax(int depth);
 
 public:
     Game();
@@ -42,6 +49,21 @@ public:
      * @brief returns a random (and correct) action to play by the current player
      */
     action random();
+    
+    /**
+     * @brief returns an action to play by the current player, based on minmax algorithm.
+     */
+    action minmax();
+    
+//    /**
+//     * @brief returns an heuristic value for playing (x, y)
+//     */
+//    int heuristicValue(int x, int y) const;
+    
+    /**
+     * @brief returns an heuristic value corresponding to the current board and player.
+     */
+    int heuristicValue() const;
 
     ~Game();
 };

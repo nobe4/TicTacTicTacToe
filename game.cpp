@@ -1,3 +1,4 @@
+#include <algorithm>
 #include "game.h"
 
 #include "output.h"
@@ -20,14 +21,18 @@ void Game::Initialisation(){
     _board->createPatterns(_winLength);
     // choice of the first player
     // by default it's the human
+    
+    minmaxDepth = std::max(_board->h(), _board->w()) + 3;//make sure we will find the best solution.
 }
 
 void Game::gameLoop(){
     bool cont = true;
     while(cont && this->newMove() != QUIT){
         Output::displayBoard(this->_board);
-
-        if(_board->detectEndgame() != -1){
+        
+        Player winner = _board->detectEndgame();
+        if(winner != NONE){
+            cout << "The " << str(winner) << " wins the game"<< endl;
             cout << "End game" << endl;
             cont = false;
         }
@@ -88,7 +93,8 @@ ACTION_TYPE Game::newMove(){
 }
 
 action Game::nextAction() {
-    return random();
+    return minmax();
+//    return random();
 }
 
 action Game::random() {
@@ -107,6 +113,177 @@ action Game::random() {
     }
     return a;
 }
+
+//int Game::heuristicValue(int x, int y) const {
+//    //look around this cell, d cells away, ..., 2 cells away, and 1 cell away
+//    int d = 1;
+//    int value = 0;
+//    //                    for (int d = 2, coef = 1; d >= 0; --d, coef *= 3) {
+//    for (int x2 = std::max(0, x - d); x2 < std::min(_board->h(), x + d); ++x2) {
+//        for (int y2 = std::max(0, y - d); y2 < std::min(_board->h(), y + d); ++y2) {
+//            if (_board->get(x2, y2) == _currentPlayer) {
+//                ++value;
+//            }
+//        }
+//    }
+//    //                    }
+//    return value;
+//}
+
+int Game::heuristicValue() const {
+    Player winner = _board->detectEndgame();
+    switch (winner) {
+        case HUMAN:
+            return 0;
+            break;
+        case MACHINE:
+            return 100;
+            break;
+        default:
+            return 50;
+            break;
+    }
+}
+
+action Game::minmax() {
+    numberOfMinMaxFunctionCalls = 0;
+    
+    action a;
+    a.type = ERROR;
+    
+    int maxValue = -1;
+    
+    // Find the best action
+    for (int x = 0; x < _board->h(); ++x) {
+        for (int y = 0; y < _board->w(); ++y) {
+            if (_board->get(x, y) == NONE) { //for each empty cell
+                
+                // Play
+                _board->set(x, y, _currentPlayer);
+                _currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;//switch player
+                
+                // Evaluate
+                int value = minmax(minmaxDepth);
+                
+//                cout << "\nM:" << value << " ("<< x << ", " << y << ")" << endl;
+                
+                if (value > maxValue) {
+                    maxValue = value;
+                    a.c.x = x;
+                    a.c.y = y;
+                    a.type = PLAY;
+                }
+                
+                // Get back to former state
+                _board->set(x, y, NONE);
+                _currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;//switch player
+            }
+        }
+    }
+    
+    cout << "numberOfMinMaxFunctionCalls : " << numberOfMinMaxFunctionCalls << endl;
+    
+    return a;
+}
+
+int Game::minmax(int depth) {
+    numberOfMinMaxFunctionCalls++;
+    
+//    int emptyQuantity = 0;
+//    for (int x = 0; x < _board->h(); ++x) {
+//        for (int y = 0; y < _board->w(); ++y) {
+//            if (_board->get(x, y) == NONE) { //for each empty cell
+//                emptyQuantity++;            }
+//        }
+//    }
+//    if (emptyQuantity <= 3) {
+//        cout << endl << "Current player : " << str(_currentPlayer) << " / Depth : " << depth << endl;
+//        cout << "Current board : " << endl;
+//        Output::displayBoard(_board);
+//        int debugVariableToBreak;
+//    }
+
+    
+    
+    int heuristic = heuristicValue();
+//    Player winner = _board->detectEndgame();
+    
+    if (depth == 0 || _board->detectEndgame() != NONE) {
+//        cout << "h:"<< heuristic << endl;
+        return heuristic;
+    } else {
+        action a;
+        a.type = ERROR;
+        int extremeValue;
+        
+        // Find the best action
+        for (int x = 0; x < _board->h(); ++x) {
+            for (int y = 0; y < _board->w(); ++y) {
+                if (_board->get(x, y) == NONE) { //for each empty cell
+                    
+                    // Play
+                    _board->set(x, y, _currentPlayer);
+                    _currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;//switch player
+                    
+                    // Evaluate
+                    int value = minmax(depth - 1);
+                    
+                    if ((_currentPlayer == MACHINE && value < extremeValue) ||
+                        (_currentPlayer == HUMAN   && value > extremeValue) ||
+                        a.type == ERROR) {
+                        extremeValue = value;
+                        a.c.x = x;
+                        a.c.y = y;
+                        a.type = PLAY;
+                    }
+                    
+                    // Get back to former state
+                    _board->set(x, y, NONE);
+                    _currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;//switch player
+                }
+            }
+        }
+        
+//        cout << "e:"<< extremeValue << endl;
+        if (a.type == ERROR) {
+            return heuristic;
+        } else {
+            return extremeValue;
+        }
+    }
+}
+
+//action Game::minmax(int depth) {
+//    action a;
+//    a.type = ERROR;
+//    
+//    if (depth == -1) {
+//        depth = minmaxDepth;
+//        
+//        int maxValue = -1;
+//        
+//        for (int x = 0; x < _board->h(); ++x) {
+//            for (int y = 0; y < _board->w(); ++y) {
+//                if (_board->get(x, y) == NONE) { //for each empty cell
+//                    int value = heuristicValue(x, y);
+//                    if (value > maxValue) {
+//                        maxValue = value;
+//                        a.c.x = x;
+//                        a.c.y = y;
+//                        a.type = PLAY;
+//                    }
+//                }
+//            }
+//        }
+//
+//        if (maxX == -1 && maxY == -1) {
+//            return a;//knowing the a.type = ERROR
+//        } else {
+//            
+//        }
+//    }
+//    return a;
+//}
 
 Game::~Game(){
     delete _board;
