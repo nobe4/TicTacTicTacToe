@@ -26,6 +26,7 @@ private:
      * @brief switches _currentPlayer from MACHINE to human, and the opposite.
      */
     inline void switchPlayer() {_currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;};
+    int computeActionWithExtremeValue(int depth, action &a);
 
 public:
     Game();

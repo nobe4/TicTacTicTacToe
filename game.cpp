@@ -155,9 +155,34 @@ action Game::minmax() {
     numberOfMinMaxFunctionCalls = 0;
     
     action a;
-    a.type = ERROR;
+    computeActionWithExtremeValue(minmaxDepth, a);
     
-    int maxValue = -1;
+    cout << "numberOfMinMaxFunctionCalls : " << numberOfMinMaxFunctionCalls << endl;
+    
+    return a;
+}
+
+int Game::minmax(int depth) {
+    numberOfMinMaxFunctionCalls++;
+    
+    int heuristic = heuristicValue();
+    
+    if (depth == 0 || _board->detectEndgame() != NONE) {
+        return heuristic;
+    } else {
+        action a;
+        int extremeValue = computeActionWithExtremeValue(depth, a);
+        if (a.type == ERROR) {
+            return heuristic;
+        } else {
+            return extremeValue;
+        }
+    }
+}
+
+int Game::computeActionWithExtremeValue(int depth, action &a) {
+    a.type = ERROR;
+    int extremeValue;
     
     // Find the best action
     for (int x = 0; x < _board->h(); ++x) {
@@ -169,12 +194,12 @@ action Game::minmax() {
                 switchPlayer();
                 
                 // Evaluate
-                int value = minmax(minmaxDepth);
+                int value = minmax(depth - 1);
                 
-//                cout << "\nM:" << value << " ("<< x << ", " << y << ")" << endl;
-                
-                if (value > maxValue) {
-                    maxValue = value;
+                if ((_currentPlayer == MACHINE && value < extremeValue) ||
+                    (_currentPlayer == HUMAN   && value > extremeValue) ||
+                    a.type == ERROR) {
+                    extremeValue = value;
                     a.c.x = x;
                     a.c.y = y;
                     a.type = PLAY;
@@ -187,109 +212,9 @@ action Game::minmax() {
         }
     }
     
-    cout << "numberOfMinMaxFunctionCalls : " << numberOfMinMaxFunctionCalls << endl;
-    
-    return a;
+    return extremeValue;
 }
 
-int Game::minmax(int depth) {
-    numberOfMinMaxFunctionCalls++;
-    
-//    int emptyQuantity = 0;
-//    for (int x = 0; x < _board->h(); ++x) {
-//        for (int y = 0; y < _board->w(); ++y) {
-//            if (_board->get(x, y) == NONE) { //for each empty cell
-//                emptyQuantity++;            }
-//        }
-//    }
-//    if (emptyQuantity <= 3) {
-//        cout << endl << "Current player : " << str(_currentPlayer) << " / Depth : " << depth << endl;
-//        cout << "Current board : " << endl;
-//        Output::displayBoard(_board);
-//        int debugVariableToBreak;
-//    }
-
-    
-    
-    int heuristic = heuristicValue();
-//    Player winner = _board->detectEndgame();
-    
-    if (depth == 0 || _board->detectEndgame() != NONE) {
-//        cout << "h:"<< heuristic << endl;
-        return heuristic;
-    } else {
-        action a;
-        a.type = ERROR;
-        int extremeValue;
-        
-        // Find the best action
-        for (int x = 0; x < _board->h(); ++x) {
-            for (int y = 0; y < _board->w(); ++y) {
-                if (_board->get(x, y) == NONE) { //for each empty cell
-                    
-                    // Play
-                    _board->set(x, y, _currentPlayer);
-                    switchPlayer();
-                    
-                    // Evaluate
-                    int value = minmax(depth - 1);
-                    
-                    if ((_currentPlayer == MACHINE && value < extremeValue) ||
-                        (_currentPlayer == HUMAN   && value > extremeValue) ||
-                        a.type == ERROR) {
-                        extremeValue = value;
-                        a.c.x = x;
-                        a.c.y = y;
-                        a.type = PLAY;
-                    }
-                    
-                    // Get back to former state
-                    _board->set(x, y, NONE);
-                    switchPlayer();
-                }
-            }
-        }
-        
-//        cout << "e:"<< extremeValue << endl;
-        if (a.type == ERROR) {
-            return heuristic;
-        } else {
-            return extremeValue;
-        }
-    }
-}
-
-//action Game::minmax(int depth) {
-//    action a;
-//    a.type = ERROR;
-//    
-//    if (depth == -1) {
-//        depth = minmaxDepth;
-//        
-//        int maxValue = -1;
-//        
-//        for (int x = 0; x < _board->h(); ++x) {
-//            for (int y = 0; y < _board->w(); ++y) {
-//                if (_board->get(x, y) == NONE) { //for each empty cell
-//                    int value = heuristicValue(x, y);
-//                    if (value > maxValue) {
-//                        maxValue = value;
-//                        a.c.x = x;
-//                        a.c.y = y;
-//                        a.type = PLAY;
-//                    }
-//                }
-//            }
-//        }
-//
-//        if (maxX == -1 && maxY == -1) {
-//            return a;//knowing the a.type = ERROR
-//        } else {
-//            
-//        }
-//    }
-//    return a;
-//}
 
 Game::~Game(){
     delete _board;
