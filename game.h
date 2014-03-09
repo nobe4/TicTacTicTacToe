@@ -28,6 +28,18 @@ private:
     inline void switchPlayer() {_currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;};
     int computeActionWithExtremeValue(int depth, action &a);
 
+	int minmaxWithPruning(int depth, int alpha, int beta);
+	int computeActionWithPruning(int depth, action &a, int& alpha, int& beta);
+	action minmaxWithPruning();
+
+
+	action minmaxWithPruningV2();
+	int minmaxWithPruningV2(int depth, int alpha, int beta);
+	void computeActionWithPruningV2(int depth, action &a, int& alpha, int& beta);
+
+
+
+
 public:
     Game();
     /**

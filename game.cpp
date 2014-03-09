@@ -1,6 +1,7 @@
 #include <algorithm>
-#include "game.h"
+#include <limits>
 
+#include "game.h"
 #include "output.h"
 
 Game::Game(){
@@ -49,6 +50,7 @@ void Game::gameLoop(){
     cout << "\tMatthieu de La Roche Saint Andre" << endl;
     // add your name here
     cout << "\t(c) 2014" << endl;
+	system("PAUSE");
 }
 
 ACTION_TYPE Game::newMove(){
@@ -99,7 +101,16 @@ ACTION_TYPE Game::newMove(){
 }
 
 action Game::nextAction() {
-    return minmax();
+	action testPruning = minmaxWithPruning();
+	cout << testPruning.type << " | " << testPruning.c.x << " | " << testPruning.c.y << " | " << endl;
+	
+	action testPruningV2 = minmaxWithPruningV2();
+	cout << testPruningV2.type << " | " << testPruningV2.c.x << " | " << testPruningV2.c.y << " | " << endl;
+
+	action b = minmax();
+	cout << b.type << " | " << b.c.x << " | " << b.c.y << " | " << endl;
+	
+	return b;			//previously "return minmax();"
 //    return random();
 }
 
@@ -182,7 +193,9 @@ int Game::minmax(int depth) {
 
 int Game::computeActionWithExtremeValue(int depth, action &a) {
     a.type = ERROR;
-    int extremeValue;
+    
+	//TODO : have to be initialized
+	int extremeValue;
     
     // Find the best action
     for (int x = 0; x < _board->h(); ++x) {
@@ -196,9 +209,10 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
                 // Evaluate
                 int value = minmax(depth - 1);
                 
-                if ((_currentPlayer == MACHINE && value < extremeValue) ||
-                    (_currentPlayer == HUMAN   && value > extremeValue) ||
-                    a.type == ERROR) {
+				if (a.type == ERROR || 
+					(_currentPlayer == MACHINE && value < extremeValue) ||
+                    (_currentPlayer == HUMAN   && value > extremeValue)
+                    ) {
                     extremeValue = value;
                     a.c.x = x;
                     a.c.y = y;
@@ -214,6 +228,250 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
     
     return extremeValue;
 }
+
+
+
+action Game::minmaxWithPruning() {
+	numberOfMinMaxFunctionCalls = 0;
+
+	action a;
+
+	int alpha = std::numeric_limits<int>::min();
+	int beta = std::numeric_limits<int>::max();
+	computeActionWithPruning(minmaxDepth, a, alpha, beta);
+
+	cout << "numberOfMinMaxFunctionCalls (with Pruning): " << numberOfMinMaxFunctionCalls << endl;
+
+	return a;
+}
+
+int Game::minmaxWithPruning(int depth, int alpha, int beta) {
+	numberOfMinMaxFunctionCalls++;
+
+	int heuristic = heuristicValue();
+
+	if (depth == 0 || _board->detectEndgame() != NONE) {
+		return heuristic;
+	}
+	else {
+		action a;
+
+		
+		int extremeValue = computeActionWithPruning(depth, a, alpha, beta);
+		if (a.type == ERROR) {
+			return heuristic;
+		}
+		else if (extremeValue == NULL)
+		{
+			//ERROR
+		}
+		else {
+			if (_currentPlayer == HUMAN)
+			{
+				//We are at a a max point, so extremeValue is an alpha
+				extremeValue = alpha;
+			}
+			else if (_currentPlayer == MACHINE)
+			{
+				extremeValue = beta;
+			}
+			return extremeValue;
+		}
+		
+	}
+}
+
+int Game::computeActionWithPruning(int depth, action &a, int& alpha, int& beta) {
+	a.type = ERROR;
+
+	//TODO : have to be initialized
+	int extremeValue = NULL;
+	bool pruning = false;
+	
+	int x = 0;
+	int y = 0;
+	bool end = false;
+	// Find the best action
+	//for (int x = 0; x < _board->h(); ++x) {
+	//	for (int y = 0; y < _board->w(); ++y) {
+	while ((alpha < beta) && !end)
+	{
+		if (_board->get(x, y) == NONE) { //for each empty cell
+
+			// Play
+			_board->set(x, y, _currentPlayer);
+			switchPlayer();
+
+			// Evaluate
+			int value = minmaxWithPruning(depth - 1, alpha, beta);
+
+			/*if (a.type == ERROR ||
+				(_currentPlayer == MACHINE && value < beta) ||
+				(_currentPlayer == HUMAN   && value > alpha)
+				) {*/
+
+			if (a.type == ERROR)
+			{
+				if (_currentPlayer == MACHINE && value < beta)
+					beta = value;
+				else if (_currentPlayer == HUMAN && value > alpha)
+					alpha = value;
+				else													//Not sure if it's useful
+					extremeValue = value;
+				a.c.x = x;
+				a.c.y = y;
+				a.type = PLAY;
+			}
+
+			// Get back to former state
+			_board->set(x, y, NONE);
+			switchPlayer();
+		}
+		y++;
+
+		if (y == _board->w())
+		{
+			y = 0;
+			x++;
+		}
+		if (x == _board->h())
+			end = true;
+	}
+	//	}
+	//}
+	//if (_currentPlayer == MACHINE)
+	//	extremeValue = beta;
+	//else if (_currentPlayer == HUMAN)
+	//	extremeValue = alpha;
+	//else
+	//	//Error because of NONE type for _currentPlayer
+
+	return extremeValue;
+}
+
+
+
+
+action Game::minmaxWithPruningV2() {
+	numberOfMinMaxFunctionCalls = 0;
+
+	action a;
+
+	int alpha = std::numeric_limits<int>::min();
+	int beta = std::numeric_limits<int>::max();
+	computeActionWithPruningV2(minmaxDepth, a, alpha, beta);
+
+	cout << "numberOfMinMaxFunctionCalls (with Pruning): " << numberOfMinMaxFunctionCalls << endl;
+
+	return a;
+}
+
+int Game::minmaxWithPruningV2(int depth, int alpha, int beta) {
+	numberOfMinMaxFunctionCalls++;
+
+	int heuristic = heuristicValue();
+
+	if (depth == 0 || _board->detectEndgame() != NONE) {
+		return heuristic;
+	}
+	else {
+		action a;
+		int returnValue;
+
+		computeActionWithPruningV2(depth, a, alpha, beta);
+		if (a.type == ERROR) {
+			return heuristic;
+		}
+		else {
+			if (_currentPlayer == HUMAN)
+			{
+				//We are at a a max point, so extremeValue is an alpha
+				returnValue = alpha;
+			}
+			else if (_currentPlayer == MACHINE)
+			{
+				returnValue = beta;
+			}
+			else
+			{
+				//ERROR : _currentPlayer may be NONE at the moment, that is not correct.
+			}
+			return returnValue;
+		}
+
+	}
+}
+
+void Game::computeActionWithPruningV2(int depth, action &a, int& alpha, int& beta) {
+	a.type = ERROR;
+
+	//TODO : have to be initialized
+	//int extremeValue;
+	bool pruning = false;
+
+	int x = 0;
+	int y = 0;
+	bool end = false;
+	// Find the best action
+	//for (int x = 0; x < _board->h(); ++x) {
+	//	for (int y = 0; y < _board->w(); ++y) {
+	while ((alpha < beta) && !end)
+	{
+		if (_board->get(x, y) == NONE) { //for each empty cell
+
+			// Play
+			_board->set(x, y, _currentPlayer);
+			switchPlayer();
+
+			// Evaluate
+			int value = minmaxWithPruningV2(depth - 1, alpha, beta);
+
+			/*if (a.type == ERROR ||
+			(_currentPlayer == MACHINE && value < beta) ||
+			(_currentPlayer == HUMAN   && value > alpha)
+			) {*/
+
+			if (a.type == ERROR)
+			{
+				if (_currentPlayer == MACHINE && value < beta)
+					beta = value;
+				else if (_currentPlayer == HUMAN && value > alpha)
+					alpha = value;
+				//else											
+				//Not sure if it's useful
+				//	extremeValue = value;
+				a.c.x = x;
+				a.c.y = y;
+				a.type = PLAY;
+			}
+
+			// Get back to former state
+			_board->set(x, y, NONE);
+			switchPlayer();
+		}
+		y++;
+
+		if (y == _board->w())
+		{
+			y = 0;
+			x++;
+		}
+		if (x == _board->h())
+			end = true;
+	}
+	//	}
+	//}
+	//if (_currentPlayer == MACHINE)
+	//	extremeValue = beta;
+	//else if (_currentPlayer == HUMAN)
+	//	extremeValue = alpha;
+	//else
+	//	//Error because of NONE type for _currentPlayer
+
+	//return extremeValue;
+}
+
+
 
 
 Game::~Game(){
