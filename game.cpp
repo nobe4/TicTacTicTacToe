@@ -38,7 +38,7 @@ void Game::gameLoop(){
 
         Output::displayBoard(this->_board);
         
-        bool winner2 = _board->detectEndgame2(lastAction.c.x,lastAction.c.y);
+        bool winner2 = _board->detectEndgame2(lastAction.cell.col,lastAction.cell.line);
         if(winner2){
             cout << "End game" << endl;
             cont = false;
@@ -74,11 +74,11 @@ ACTION_TYPE Game::newMove(){
         }else if(a.type == ERROR){ // if there is an error in the action
             cout << "/!\\ Error in input" << endl;
         }else if(a.type == PLAY){ // if the action is playing
-            if(a.c.x >= this->_board->w() || a.c.y >= this->_board->h()){ // if the cell is not inside the board
+            if(a.cell.col >= this->_board->w() || a.cell.line >= this->_board->h()){ // if the cell is not inside the board
                 cout << "/!\\ Error : cell out of the matrix" << endl;
                 a.type = ERROR;
             }else{
-                if(this->_board->get(a.c.x,a.c.y) != NONE){ // if the cell is not empty
+                if(this->_board->get(a.cell.col,a.cell.line) != NONE){ // if the cell is not empty
                     cout << "/!\\ Error : cell is not empty" << endl;
                     a.type = ERROR;
                 }
@@ -93,7 +93,7 @@ ACTION_TYPE Game::newMove(){
     
     if (a.type == PLAY) {
         this->_history.push_back(a);
-        this->_board->set(a.c.x, a.c.y, _currentPlayer);
+        this->_board->set(a.cell.col, a.cell.line, _currentPlayer);
         switchPlayer();
     }
     
@@ -112,8 +112,8 @@ action Game::random() {
     for (int x = 0; x < _board->h() && !foundEmpty; ++x) {
         for (int y = 0; y < _board->w() && !foundEmpty; ++y) {
             if (_board->get(x, y) == NONE) {
-                a.c.x = x;
-                a.c.y = y;
+                a.cell.col = x;
+                a.cell.line = y;
                 a.type = PLAY;
                 foundEmpty = true;
             }
@@ -208,8 +208,8 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
                     (_currentPlayer == MACHINE && value < extremeValue) ||
                     (_currentPlayer == HUMAN   && value > extremeValue)) {
                     extremeValue = value;
-                    a.c.x = x;
-                    a.c.y = y;
+                    a.cell.col = x;
+                    a.cell.line = y;
                     a.type = PLAY;
                 }
                 
@@ -229,10 +229,10 @@ void Game::displayHistoric(){
    for(int i = 0; i < this->_history.size(); i++){
         if(this->_history.at(i).type == PLAY){
             if(playerPlaying == true){
-                cout << "The player  played : \t(" << this->_history.at(i).c.x << ", " << this->_history.at(i).c.y << ")" << endl;
+                cout << "The player  played : \t(" << this->_history.at(i).cell.col << ", " << this->_history.at(i).cell.line << ")" << endl;
             }
             else{
-                cout << "The machine played : \t(" << this->_history.at(i).c.x << ", " << this->_history.at(i).c.y << ")" << endl;
+                cout << "The machine played : \t(" << this->_history.at(i).cell.col << ", " << this->_history.at(i).cell.line << ")" << endl;
             }
         }
         else if(this->_history.at(i).type == QUIT){

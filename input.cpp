@@ -108,14 +108,14 @@ action Input::inputAction(){
         i = parseInputStringToInteger(s);
 
         if(i.type == OK){
-            a.c.x = i.value;
+            a.cell.col = i.value;
             cout << "Input y for your play : ";
             cin >> s;
             i = parseInputStringToInteger(s);
             if(i.type == OK){
                 a.type = PLAY;
-                a.c.y = i.value;
-                cout << "Inputed : " << a.c.x << " " << a.c.y << endl;
+                a.cell.line = i.value;
+                cout << "Inputed : " << a.cell.col << " " << a.cell.line << endl;
             }else{
                 cout << "/!\\ Error in y input, aborting..." << endl;
             }

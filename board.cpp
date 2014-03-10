@@ -218,12 +218,12 @@ void Board::createPatterns(int patternSize){
     _diagoRigthPattern.resize(_patternSize);
     _diagoLeftPattern.resize(_patternSize);
 
-    for(int i = 0; i < _patternSize; i ++){
-        _horizontalPattern.at(i) = {0,i};
-        _verticalPattern.at(i) = {i,0};
-        _diagoRigthPattern.at(i) = {i,i};
-        _diagoLeftPattern.at(i) = {_patternSize - i - 1, i};
-    }
+//    for(int i = 0; i < _patternSize; i ++){
+//        _horizontalPattern.at(i) = {0,i};
+//        _verticalPattern.at(i) = {i,0};
+//        _diagoRigthPattern.at(i) = {i,i};
+//        _diagoLeftPattern.at(i) = {_patternSize - i - 1, i};
+//    }
 
     //    for(int i = 0; i < _patternSize; i ++)
     //        cout << _horizontalPattern.at(i).dx << " " << _horizontalPattern.at(i).dy << endl;
