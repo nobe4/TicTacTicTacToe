@@ -56,6 +56,7 @@ ACTION_TYPE Game::newMove(){
     cout << "New move for the " << str(_currentPlayer) << endl;
     
     action a;
+    a.type = ERROR;
     
     if(_currentPlayer == HUMAN) {
         a = Input::inputAction();
@@ -68,18 +69,11 @@ ACTION_TYPE Game::newMove(){
             if(a.c.x >= this->_board->w() || a.c.y >= this->_board->h()){ // if the cell is not inside the board
                 cout << "/!\\ Error : cell out of the matrix" << endl;
                 a.type = ERROR;
-//                return ERROR;
             }else{
                 if(this->_board->get(a.c.x,a.c.y) != NONE){ // if the cell is not empty
                     cout << "/!\\ Error : cell is not empty" << endl;
                     a.type = ERROR;
-//                    return ERROR;
                 }
-//                else{
-//                    this->_history.push_back(a);
-//                    this->_board->set(a.c.x, a.c.y, HUMAN);
-//                    _currentPlayer = MACHINE;
-//                }
             }
         }else{
             cout << "/!\\ Error : invalid action" << endl;
@@ -167,6 +161,7 @@ int Game::minmax(int depth) {
     
     int heuristic = heuristicValue();
     
+    // if we've reached maximum depth or if a player wins
     if (depth == 0 || _board->detectEndgame() != NONE) {
         return heuristic;
     } else {
@@ -182,7 +177,12 @@ int Game::minmax(int depth) {
 
 int Game::computeActionWithExtremeValue(int depth, action &a) {
     a.type = ERROR;
-    int extremeValue;
+    // extremeValue is either the maximum or the minimum value
+    // depending on the current player.
+    // If ever extremeValue is not initialized later, extremeValue won't be used anyway
+    // because a.type will be ERROR.
+    // We initialize it here, with whatever value, to make sure that Visual Studio debuger will shut up.
+    int extremeValue = 0;
     
     // Find the best action
     for (int x = 0; x < _board->h(); ++x) {
@@ -196,9 +196,9 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
                 // Evaluate
                 int value = minmax(depth - 1);
                 
-                if ((_currentPlayer == MACHINE && value < extremeValue) ||
-                    (_currentPlayer == HUMAN   && value > extremeValue) ||
-                    a.type == ERROR) {
+                if (a.type == ERROR ||
+                    (_currentPlayer == MACHINE && value < extremeValue) ||
+                    (_currentPlayer == HUMAN   && value > extremeValue)) {
                     extremeValue = value;
                     a.c.x = x;
                     a.c.y = y;
@@ -214,7 +214,6 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
     
     return extremeValue;
 }
-
 
 Game::~Game(){
     delete _board;
