@@ -78,6 +78,14 @@ public:
     Player detectEndgame();
 
     /**
+     * @brief detectEndgame2 verifiy if the current cell leads to a winning game
+     * @param x
+     * @param y
+     * @return true if the cell leads to a winning game
+     */
+    bool detectEndgame2(int x, int y);
+
+    /**
      * @brief isCellWinning check if a cell is winning over the 4 patterns, will be called by detectEndgame()
      * @param x
      * @param y
@@ -90,6 +98,26 @@ public:
      * @param size is the min length to win
      */
     void createPatterns(int patternSize);
+
+    /**
+     * @brief isCellWinningTwo check if the cell is winning depending of recursives rules and current player
+     * @param x
+     * @param y
+     * @param current
+     * @return true if the current cell is winning
+     */
+    bool isCellWinningTwo(int x, int y, Player current);
+
+    /**
+     * @brief recursiveCount check in a direction (given by [xy]direction) if the cell is winning
+     * @param x
+     * @param y
+     * @param xdirection
+     * @param ydirection
+     * @param current
+     * @return
+     */
+    int recursiveCount(int x, int y, int xdirection, int ydirection, Player current);
 };
 
 #endif // BOARD_H

@@ -23,17 +23,30 @@ void Game::Initialisation(){
     // by default it's the human
     
     minmaxDepth = std::max(_board->h(), _board->w()) + 3;//make sure we will find the best solution.
-    _currentPlayer = MACHINE;
+
+    _firstPlayer= Input::inputFirstPLayer();
+    Output::displayBoard(this->_board);
+
+    _currentPlayer = _firstPlayer;
 }
 
 void Game::gameLoop(){
     bool cont = true;
     while(cont && this->newMove() != QUIT){
+
+        action lastAction = (this->_history.at(this->_history.size() - 1)); // get last move played
+
         Output::displayBoard(this->_board);
         
-        Player winner = _board->detectEndgame();
-        if(winner != NONE){
-            cout << "The " << str(winner) << " wins the game"<< endl;
+//      Player winner = _board->detectEndgame();
+        bool winner2 = _board->detectEndgame2(lastAction.c.x,lastAction.c.y);
+//        if(winner != NONE){
+//            cout << "The " << str(winner) << " wins the game"<< endl;
+//            cout << "End game" << endl;
+//            cont = false;
+//        }
+        if(winner2){
+//            cout << "Not the " << str(this->_currentPlayer) << " wins the game"<< endl;
             cout << "End game" << endl;
             cont = false;
         }
@@ -44,9 +57,11 @@ void Game::gameLoop(){
         }
     }
 
+    displayHistoric();
     cout << "Project realised by" << endl;
     cout << "\tVictor Haffreingue" << endl;
     cout << "\tMatthieu de La Roche Saint Andre" << endl;
+    cout << "\tDavid Auriac" << endl;
     // add your name here
     cout << "\t(c) 2014" << endl;
 }
@@ -215,6 +230,32 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
     return extremeValue;
 }
 
+void Game::displayHistoric(){
+    bool playerPlaying = (_firstPlayer == HUMAN);
+
+   for(int i = 0; i < this->_history.size(); i++){
+        if(this->_history.at(i).type == PLAY){
+            if(playerPlaying == true){
+                cout << "The \tplayer \t\thas played : \t(" << this->_history.at(i).c.x << ", " << this->_history.at(i).c.y << ")" << endl;
+            }
+            else{
+                cout << "The \tmachine \thas played : \t(" << this->_history.at(i).c.x << ", " << this->_history.at(i).c.y << ")" << endl;
+            }
+        }
+        else if(this->_history.at(i).type == QUIT){
+            cout << "The \tplayer has leaved the game" << endl;
+        }
+        else{
+            cout << "The \tplayer has surrendered" << endl;
+        }
+
+        playerPlaying = !playerPlaying;
+   }
+   if(playerPlaying == false)
+       cout << "The \tplayer \thas winned the game" << endl;
+   else
+       cout << "The \tmachine \thas winned the game" << endl;
+}
 
 Game::~Game(){
     delete _board;

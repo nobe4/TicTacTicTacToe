@@ -57,7 +57,7 @@ void Board::set(int i, int j, Player v){
 }
 
 Player Board::detectEndgame(){
-    // need to detect horizontally between 0 and size - paternSize
+//     need to detect horizontally between 0 and size - paternSize
     for(int i  = 0; i < this->w(); i ++){
         for(int j  = 0; j < this->h(); j ++){
             if(this->isCellWinning(i,j)){
@@ -65,7 +65,45 @@ Player Board::detectEndgame(){
             }
         }
     }
+
     return NONE;
+}
+
+bool Board::detectEndgame2(int x, int y){
+    if(this->isCellWinningTwo(x,y,this->get(x,y))) return true;
+    return false;
+}
+
+bool Board::isCellWinningTwo(int x, int y, Player current){
+    if((recursiveCount(x, y, 0, -1, current) + 1 + recursiveCount(x, y, 0, 1, current) >= this->_patternSize))
+        return true;
+        //Vertical win
+
+    if((recursiveCount(x, y, 1, -1, current) + 1 + recursiveCount(x, y, -1, 1, current) >= this->_patternSize))
+        return true;
+        //bottom left to up right win
+
+    if((recursiveCount(x, y, 1, 0, current) + 1 + recursiveCount(x, y, -1, 0, current) >= this->_patternSize))
+        return true;
+        //Horizontal win
+
+    if((recursiveCount(x, y, 1, 1, current) + 1 + recursiveCount(x, y, -1, -1, current) >= this->_patternSize))
+        return true;
+        //up left to bottom right win
+
+    return false;
+    //If nothing
+}
+
+int Board::recursiveCount(int x, int y, int xdirection, int ydirection, Player current){
+    x = x + xdirection;
+    y = y + ydirection;
+    if((0 <= x) && (x < this->w()) && (0 <= y) && (y < this->h())){
+        if(this->_cells[x][y] == current)
+            return (recursiveCount(x, y, xdirection, ydirection, current)+1);
+        return 0;
+    }
+    return 0;
 }
 
 bool Board::isCellWinning(int x, int y){
