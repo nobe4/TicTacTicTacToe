@@ -145,10 +145,32 @@ int Game::heuristicValue() const {
             return 0;
             break;
         case MACHINE:
-            return 100;
+            return 1000;
             break;
         default:
-            return 50;
+            int d = 1;
+            int value = 50;
+            
+            for (int x = 0; x < _board->h(); ++x) {
+                for (int y = 0; y < _board->w(); ++y) {
+                    
+                    //                    for (int d = 2, coef = 1; d >= 0; --d, coef *= 3) {
+                    for (int x2 = std::max(0, x - d); x2 < std::min(_board->h(), x + d); ++x2) {
+                        for (int y2 = std::max(0, y - d); y2 < std::min(_board->h(), y + d); ++y2) {
+                            if (_board->get(x2, y2) == NONE) {
+                                value += 1;
+                            }else if (_board->get(x2, y2) == _currentPlayer) {
+                                value += 3;
+                            }
+                        }
+                    }
+                    //                    }
+                    
+                }
+            }
+            
+            cout << value << endl;
+            return value;
             break;
     }
 }
