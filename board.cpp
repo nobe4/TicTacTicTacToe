@@ -57,7 +57,7 @@ void Board::set(int i, int j, Player v){
 }
 
 Player Board::detectEndgame(){
-    // need to detect horizontally between 0 and size - paternSize
+//     need to detect horizontally between 0 and size - paternSize
     for(int i  = 0; i < this->w(); i ++){
         for(int j  = 0; j < this->h(); j ++){
             if(this->isCellWinning(i,j)){
@@ -65,7 +65,45 @@ Player Board::detectEndgame(){
             }
         }
     }
+
     return NONE;
+}
+
+bool Board::detectEndgame2(int x, int y){
+    if(this->isCellWinningTwo(x,y,this->get(x,y))) return true;
+    return false;
+}
+
+bool Board::isCellWinningTwo(int x, int y, Player current){
+    if((recursiveCount(x, y, 0, -1, current) + 1 + recursiveCount(x, y, 0, 1, current) >= this->_patternSize))
+        return true;
+        //Vertical win
+
+    if((recursiveCount(x, y, 1, -1, current) + 1 + recursiveCount(x, y, -1, 1, current) >= this->_patternSize))
+        return true;
+        //bottom left to up right win
+
+    if((recursiveCount(x, y, 1, 0, current) + 1 + recursiveCount(x, y, -1, 0, current) >= this->_patternSize))
+        return true;
+        //Horizontal win
+
+    if((recursiveCount(x, y, 1, 1, current) + 1 + recursiveCount(x, y, -1, -1, current) >= this->_patternSize))
+        return true;
+        //up left to bottom right win
+
+    return false;
+    //If nothing
+}
+
+int Board::recursiveCount(int x, int y, int xdirection, int ydirection, Player current){
+    x = x + xdirection;
+    y = y + ydirection;
+    if((0 <= x) && (x < this->w()) && (0 <= y) && (y < this->h())){
+        if(this->_cells[x][y] == current)
+            return (recursiveCount(x, y, xdirection, ydirection, current)+1);
+        return 0;
+    }
+    return 0;
 }
 
 bool Board::isCellWinning(int x, int y){
@@ -78,7 +116,7 @@ bool Board::isCellWinning(int x, int y){
     int value = this->get(x,y);
 
     if(value == -1){
-        // cout << "Cell " << x << " " << y  <<  " empty, passing ... "<< endl;
+         cout << "Cell " << x << " " << y  <<  " empty, passing ... "<< endl;
         return false;
     }
 
@@ -87,12 +125,12 @@ bool Board::isCellWinning(int x, int y){
 
     // horizontal check
     if(y < this->h() - _patternSize + 1){
-        // cout << "Horizontal check : " << x << " " << y <<endl ;
+//         cout << "Horizontal check : " << x << " " << y <<endl ;
         winning = true;
         i = 0;
         do{
-            // cout <<             x + _horizontalPattern.at(i).dx << " : " << y + _horizontalPattern.at(i).dy     << " => "
-            //     << this->get(  x + _horizontalPattern.at(i).dx ,           y + _horizontalPattern.at(i).dy)    << " ?= " << value << endl;
+//             cout <<             x + _horizontalPattern.at(i).dx << " : " << y + _horizontalPattern.at(i).dy     << " => "
+//                  << this->get(  x + _horizontalPattern.at(i).dx ,           y + _horizontalPattern.at(i).dy)    << " ?= " << value << endl;
             if(this->get(x + _horizontalPattern.at(i).dx , y + _horizontalPattern.at(i).dy) != value){
                 winning = false;
             }
@@ -102,12 +140,12 @@ bool Board::isCellWinning(int x, int y){
 
     // vertical check
     if(x < this->w() - _patternSize + 1 && winning == false){
-        // cout << "Vertical check : " << x << " " << y <<endl ;
+//         cout << "Vertical check : " << x << " " << y <<endl ;
         winning = true;
         i = 0;
         do{
-            // cout <<             x + _verticalPattern.at(i).dx << " : " << y + _verticalPattern.at(i).dy     << " => "
-            //      << this->get(  x + _verticalPattern.at(i).dx ,           y + _verticalPattern.at(i).dy)    << " ?= " << value << endl;
+//             cout <<             x + _verticalPattern.at(i).dx << " : " << y + _verticalPattern.at(i).dy     << " => "
+//                  << this->get(  x + _verticalPattern.at(i).dx ,           y + _verticalPattern.at(i).dy)    << " ?= " << value << endl;
             if(this->get(x + _verticalPattern.at(i).dx , y + _verticalPattern.at(i).dy) != value){
                 winning = false;
             }
@@ -117,12 +155,12 @@ bool Board::isCellWinning(int x, int y){
 
     // diagoR check
     if(x < this->w() - _patternSize + 1 && y < this->h() - _patternSize + 1 && winning == false){
-        // cout << "Diago Rigth check : " << x << " " << y <<endl ;
+//         cout << "Diago Rigth check : " << x << " " << y <<endl ;
         winning = true;
         i = 0;
         do{
-            // cout <<             x + _diagoRigthPattern.at(i).dx << " : " << y + _diagoRigthPattern.at(i).dy     << " => "
-            //      << this->get(  x + _diagoRigthPattern.at(i).dx ,           y + _diagoRigthPattern.at(i).dy)    << " ?= " << value << endl;
+//             cout <<             x + _diagoRigthPattern.at(i).dx << " : " << y + _diagoRigthPattern.at(i).dy     << " => "
+//                  << this->get(  x + _diagoRigthPattern.at(i).dx ,           y + _diagoRigthPattern.at(i).dy)    << " ?= " << value << endl;
             if(this->get(x + _diagoRigthPattern.at(i).dx , y + _diagoRigthPattern.at(i).dy) != value){
                 winning = false;
             }
@@ -132,17 +170,20 @@ bool Board::isCellWinning(int x, int y){
 
     // diagoL check
     if(x < this->w() - _patternSize + 1 && y < this->h() - _patternSize + 1 && winning == false){
-        // cout << "Diago Left check : " << x << " " << y <<endl ;
-        winning = true;
-        i = 0;
-        do{
-            // cout <<             x + _diagoLeftPattern.at(i).dx << " : " << y + _diagoLeftPattern.at(i).dy     << " => "
-            //      << this->get(  x + _diagoLeftPattern.at(i).dx ,           y + _diagoLeftPattern.at(i).dy)    << " ?= " << value << endl;
-            if(this->get(x + _diagoLeftPattern.at(i).dx , y + _diagoLeftPattern.at(i).dy) != value){
-                winning = false;
-            }
-            ++i;
-        }while(i < this->_patternSize && winning == true);
+//        cout << "Diago Left check : " << x << " " << y <<endl ;
+        value = this->get(x + _diagoLeftPattern.at(0).dx , y + _diagoLeftPattern.at(0).dy); // update the value
+        if(value != NONE){
+            winning = true;
+            i = 0;
+            do{
+//                 cout <<             x + _diagoLeftPattern.at(i).dx << " : " << y + _diagoLeftPattern.at(i).dy     << " => "
+//                      << this->get(  x + _diagoLeftPattern.at(i).dx ,           y + _diagoLeftPattern.at(i).dy)    << " ?= " << value << endl;
+                if(this->get(x + _diagoLeftPattern.at(i).dx , y + _diagoLeftPattern.at(i).dy) != value){
+                    winning = false;
+                }
+                ++i;
+            }while(i < this->_patternSize && winning == true);
+        }
     }
 
     return winning;

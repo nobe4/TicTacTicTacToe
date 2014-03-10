@@ -29,6 +29,11 @@ public:
      */
     static action inputAction();
 
+    /**
+     * @brief inputFirstPLayer parse input from console and return the player selected
+     * @return the first player to play
+     */
+    static Player inputFirstPLayer();
 
     /**
      * @brief parseInputStringToInteger convert a string into a integer that follow rules of the game

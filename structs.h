@@ -13,7 +13,7 @@ typedef struct _dimension{
 /**
  * @brief The ACTION_TYPE enum is a enumeration listing all type of actions possible during the game
  */
-enum ACTION_TYPE{QUIT,PLAY,ERROR/*,SURRENDER*/};
+enum ACTION_TYPE {QUIT,PLAY,ERROR/*,SURRENDER*/};
 
 /**
  * @brief The Player enum is an enum to check whether it's the human turn or the machine turn

@@ -108,6 +108,21 @@ action Input::inputAction(){
     return a;
 }
 
+Player Input::inputFirstPLayer(){
+    //ASK FOR THE FIRST PLAYER TO PLAY
+
+    string s = "";
+    do{
+        cout << "Choose wich one start first : (M)achine/(H)Human" << endl;
+        cin >> s;
+    }while((s != "M") && (s != "H") && (s != "Machine") && (s != "Human"));
+
+    if((s == "M") || (s == "Machine"))
+        return MACHINE;
+    else
+        return HUMAN;
+}
+
 parsedInt Input::parseInputStringToInteger(const string input){
     stringstream stream;
     stream << input;

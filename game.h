@@ -15,6 +15,8 @@ private:
     int _winLength; ///< lenght of alignment for winning
     int numberOfMinMaxFunctionCalls;
 
+    Player _firstPlayer; ///< first player to play
+
     Player _currentPlayer; ///< current player
     
     /**
@@ -70,6 +72,8 @@ public:
      * @brief returns an heuristic value corresponding to the current board and player.
      */
     int heuristicValue() const;
+
+    void displayHistoric();
 
     ~Game();
 };
