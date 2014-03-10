@@ -14,7 +14,7 @@ void Game::Initialisation(){
     // set min to be the minimal of board width and board heigth
     int min = _board->h();
     if(_board->w() < min) min = _board->w();
-
+    
     // initialisation of minimal length to win
     _winLength = Input::inputWinLength(min);
 
@@ -22,7 +22,7 @@ void Game::Initialisation(){
     // choice of the first player
     // by default it's the human
     
-    minmaxDepth = std::max(_board->h(), _board->w()) + 3;//make sure we will find the best solution.
+    minmaxDepth = Input::getMinMaxDepth();
 
     _firstPlayer= Input::inputFirstPLayer();
     Output::displayBoard(this->_board);
@@ -38,15 +38,8 @@ void Game::gameLoop(){
 
         Output::displayBoard(this->_board);
         
-//      Player winner = _board->detectEndgame();
         bool winner2 = _board->detectEndgame2(lastAction.c.x,lastAction.c.y);
-//        if(winner != NONE){
-//            cout << "The " << str(winner) << " wins the game"<< endl;
-//            cout << "End game" << endl;
-//            cont = false;
-//        }
         if(winner2){
-//            cout << "Not the " << str(this->_currentPlayer) << " wins the game"<< endl;
             cout << "End game" << endl;
             cont = false;
         }
@@ -252,9 +245,9 @@ void Game::displayHistoric(){
         playerPlaying = !playerPlaying;
    }
    if(playerPlaying == false)
-       cout << "The player won the game" << endl;
+       cout << "The player won the game." << endl;
    else
-       cout << "The machine won the game" << endl;
+       cout << "The machine won the game." << endl;
 }
 Game::~Game(){
     delete _board;

@@ -42,6 +42,30 @@ dimension Input::inputMatrixDimension(){
     return d;
 }
 
+int Input::getMinMaxDepth() {
+    string input;
+    int max = 3;
+    
+    cout << "Input the maximal depth to run MinMax algorithm : ";
+    cin >> input;
+    parsedInt i = parseInputStringToInteger(input);
+    
+    if(i.type == OK){
+        if(i.value <= 0){
+            cout << "/!\\ Error : Value too low : " << max << endl;
+            return max;
+        }else{
+            cout << "Parsed value for the maximal depth to run MinMax algorithm : " << i.value << endl;
+            return i.value;
+        }
+    }else{
+        cout << "/!\\ Error : Not a number : return " << max << endl;
+    }
+    
+    return max; // bad input : default size : max
+    
+}
+
 int Input::inputWinLength(int max){
     string input;
 

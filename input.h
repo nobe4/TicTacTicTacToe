@@ -41,6 +41,8 @@ public:
      * @return a parsedInt that has a type and a value
      */
     static parsedInt parseInputStringToInteger(const std::string input);
+    
+    static int getMinMaxDepth();
 };
 
 #endif // INPUT_H
