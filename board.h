@@ -118,6 +118,12 @@ public:
      * @return
      */
     int recursiveCount(int x, int y, int xdirection, int ydirection, Player current);
+
+	bool playerCanWin(int x, int y, Player current, vector<int>& possibilities);
+
+	int recursiveCountHoleAllowed(int x, int y, int xdirection, int ydirection, Player current, int& nbHoles, int& chain);
+
+
 };
 
 #endif // BOARD_H

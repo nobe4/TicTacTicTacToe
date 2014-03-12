@@ -234,3 +234,95 @@ void Board::createPatterns(int patternSize){
     //    for(int i = 0; i < _patternSize; i ++)
     //        cout << _diagoLeftPattern.at(i).dx << " " << _diagoLeftPattern.at(i).dy << endl;
 }
+
+
+
+int Board::recursiveCountHoleAllowed(int x, int y, int xdirection, int ydirection, Player current, int& nbHoles, int& chain){
+
+	x = x + xdirection;
+
+	y = y + ydirection;
+
+	if ((0 <= x) && (x < this->w()) && (0 <= y) && (y < this->h())){
+
+		if ((this->_cells[x][y] == current))
+		{
+			chain++;
+			return (recursiveCountHoleAllowed(x, y, xdirection, ydirection, current, nbHoles, chain) + 1);
+		}
+		else if (this->_cells[x][y] == NONE)
+		{
+			//create a new chain
+			int newChain = 0;
+			//increase the numbzer of hole in the pattern
+			nbHoles++;
+			int out = recursiveCountHoleAllowed(x, y, xdirection, ydirection, current, nbHoles, newChain) + 1;
+			
+			//If the new chain found is better than the old one, we replace it
+			if (newChain > chain)
+				chain = newChain;
+			return out;
+		}
+		return 0;
+		
+	}
+
+	return 0;
+}
+//
+//bool Board::playerCanWin(int x, int y, Player current, vector<int>& possibilities){
+//
+//	possibilities.clear();
+//	int nbHoles = 0, chain = 0, heuristic = 0;
+//	
+//	//Test vertical win
+//	int chainSize = recursiveCountHoleAllowed(x, y, 0, -1, current, nbHoles, chain) + 1 + recursiveCountHoleAllowed(x, y, 0, 1, current, nbHoles, chain);
+//
+//	if (chainSize >= this->_patternSize)
+//	{
+//		//Know if the player already won
+//		if ((chainSize - nbHoles) >= this->_patternSize)
+//			possibilities.push_back(std::numeric_limits<int>::max());
+//		else
+//		{
+//			//We don't have a winner, so we have to calculate the heuristic
+//			//1- The more there are points aligned, the more you have chances to win
+//			//2- if you have empty box between/next to these points, that's ever better
+//			posibilities.push_back(chain * _winLength + nbHoles / (chain * )
+//		}
+//		return true;
+//	}
+//
+//
+//	//If two cases at n-1 points aligned, instant win
+//	        
+//
+//	nbHoles = 0;
+//
+//	if ((recursiveCountHoleAllowed(x, y, 1, -1, current, nbHoles) + 1 + recursiveCountHoleAllowed(x, y, -1, 1, current, nbHoles) >= this->_patternSize))
+//		 return true;
+//
+//	        //bottom left to up right win
+//
+//	nbHoles = 0;
+//
+//	if ((recursiveCountHoleAllowed(x, y, 1, 0, current, nbHoles) + 1 + recursiveCountHoleAllowed(x, y, -1, 0, current, nbHoles) >= this->_patternSize))
+//		 return true;
+//
+//	        //Horizontal win
+//
+//	nbHoles = 0;
+//
+//	if ((recursiveCountHoleAllowed(x, y, 1, 1, current, nbHoles) + 1 + recursiveCountHoleAllowed(x, y, -1, -1, current, nbHoles) >= this->_patternSize))
+//		 return true;
+//
+//	        //up left to bottom right win
+//
+//		
+//
+//		return false;
+//
+//	    //If nothing
+//
+//		
+//}

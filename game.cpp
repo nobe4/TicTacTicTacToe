@@ -1,3 +1,4 @@
+
 #include <algorithm>
 #include "game.h"
 
@@ -274,3 +275,239 @@ void Game::displayHistoric(){
 Game::~Game(){
     delete _board;
 }
+
+//
+////Recursive implementation (base on previous heuristic and check only based on the action played
+//int Game::heuristicRecursive(int prevHeurist, action prevAction) const
+//{
+//
+//	//Check around the new action
+//	cell point = prevAction.c;
+//
+//
+//	//We check around the new point while there is not any ennemy point
+//	//if (_board.recur)
+//
+//
+//	//check history length in order to have the number of turns played
+//	int nbturns = _history.size();
+//
+//	for (int i = 0; i < _board->h(); i++)
+//	{
+//		for (int j = 0; j < _board->w(); j++)
+//		{
+//			
+//		}
+//
+//	}
+//	//plus on a de casses libres, plus on a des variations fortes --> d�croissant selon nb tours
+//
+//
+//	//test si on a n-1 elements alignes (avec n le nb de pions necessaires a aligner) avec une case libre sur un bord
+//
+//	//
+//	
+//	//
+//	
+//	//si on a plus de cases dispo, heuristique = 0 (draw)
+//
+//
+//	
+//
+//}
+
+double Game::heuristic2()
+{
+	vector<double> heuristics(2);
+
+	int nbHoles = 0, chain = 0, heuristic = 0, pattern = 0;
+	double out = 0;
+	Player playerCase = NONE;
+
+	//go throw all cases of the board
+	for (int x = 0; x < _board->h(); x++)
+	{
+		for (int y = 0; y < _board->w(); y++)
+		{
+			playerCase = _board->get(x, y);
+			if(playerCase != NONE)
+			{
+				//check each directions
+				for (int cpt = 0; cpt < 4; cpt++)
+				{
+					//reset variables
+					nbHoles = chain = 0;
+
+
+					switch (cpt)
+					{
+						//vertical win
+					case 0:
+						pattern = _board->recursiveCountHoleAllowed(x, y, 0, -1, _currentPlayer, nbHoles, chain) + 1
+							+ _board->recursiveCountHoleAllowed(x, y, 0, 1, _currentPlayer, nbHoles, chain);
+						break;
+
+						//bottom left to up right win
+					case 1:
+						pattern = _board->recursiveCountHoleAllowed(x, y, 1, -1, _currentPlayer, nbHoles, chain) + 1
+							+ _board->recursiveCountHoleAllowed(x, y, -1, 1, _currentPlayer, nbHoles, chain);
+
+						break;
+
+						//horizontal win
+					case 2:
+						pattern = _board->recursiveCountHoleAllowed(x, y, 1, 0, _currentPlayer, nbHoles, chain) + 1
+							+ _board->recursiveCountHoleAllowed(x, y, -1, 0, _currentPlayer, nbHoles, chain);
+
+						break;
+
+						//up left to bottom right win
+					case 3:
+						pattern = _board->recursiveCountHoleAllowed(x, y, 1, 1, _currentPlayer, nbHoles, chain) + 1
+							+ _board->recursiveCountHoleAllowed(x, y, -1, -1, _currentPlayer, nbHoles, chain);
+						break;
+
+						//unusual value spotted
+					default:
+						cout << "error : unexpected value of cpt in heuristic2() (cpt = " << cpt << " (usually cpt in [0;3])" << endl;
+						break;
+					}
+
+
+
+					//calculate the heuristic of the box based on its win possibilities
+
+					if (pattern >= _winLength) //Previously pattern size but seems to be the same
+					{
+						//know if the player already won
+						if ((chain) >= _winLength) //same as previous condition comment
+							heuristics[playerCase] = std::numeric_limits<double>::max();	//HUMAN is 0, MACHINE is 1
+						else
+						{
+							//we don't have a winner, so we have to calculate the heuristic
+							//1- the more there are points aligned, the more you have chances to win
+							//2- if you have empty box between/next to these points, that's ever better
+							if (chain != 0)
+								heuristics[playerCase] += chain * _winLength + nbHoles / (chain * _winLength);
+							else
+								heuristics[playerCase] += pattern * _winLength;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//Calculate the heuristic by substracting the two results
+	if (_currentPlayer == HUMAN)
+		out = heuristics[0] - heuristics[1];
+	else if (_currentPlayer == MACHINE)
+		out = heuristics[1] - heuristics[0];
+
+	return out;
+	
+	//If two cases at n-1 points aligned, instant win (in specific cases)
+
+}
+
+
+
+action Game::minmaxWithPruning() {
+	numberOfMinMaxFunctionCalls = 0;
+
+	action a;
+
+	int alpha = std::numeric_limits<int>::min();
+	int beta = std::numeric_limits<int>::max();
+	computeActionWithPruning(minmaxDepth, a, alpha, beta);
+
+	cout << "numberOfMinMaxFunctionCalls (with Pruning): " << numberOfMinMaxFunctionCalls << endl;
+
+	return a;
+}
+
+int Game::minmaxWithPruning(int depth, int alpha, int beta) {
+	numberOfMinMaxFunctionCalls++;
+
+
+	//TODO / do not calculate heuristic for all states, only the two first "if"
+	int heuristic = heuristicValue();
+
+	if (depth == 0 || _board->detectEndgame() != NONE) {
+		return heuristic;
+	}
+	else {
+		action a;
+		int returnValue;
+
+		computeActionWithPruning(depth, a, alpha, beta);
+		if (a.type == ERROR) {
+			return heuristic;
+		}
+		else {
+			if (_currentPlayer == HUMAN)
+			{
+				//We are at a a max point, so returnValue is an alpha
+				returnValue = alpha;
+			}
+			else if (_currentPlayer == MACHINE)
+			{
+				returnValue = beta;
+			}
+
+			return returnValue;
+		}
+
+	}
+}
+
+void Game::computeActionWithPruning(int depth, action &a, int& alpha, int& beta) {
+	a.type = ERROR;
+
+	bool pruning = false;
+
+	int x = 0;
+	int y = 0;
+	bool end = false;
+	// Find the best action
+
+	while ((alpha < beta) && !end)
+	{
+		if (_board->get(x, y) == NONE) { //for each empty cell
+
+			// Play
+			_board->set(x, y, _currentPlayer);
+			switchPlayer();
+
+			// Evaluate
+			int value = minmaxWithPruning(depth - 1, alpha, beta);
+
+			if (a.type == ERROR)
+			{
+				if (_currentPlayer == MACHINE && value < beta)
+					beta = value;
+				else if (_currentPlayer == HUMAN && value > alpha)
+					alpha = value;
+				//else
+
+				a.c.x = x;
+				a.c.y = y;
+				a.type = PLAY;
+			}
+
+			// Get back to former state
+			_board->set(x, y, NONE);
+			switchPlayer();
+		}
+		y++;
+
+		if (y == _board->w())
+		{
+			y = 0;
+			x++;
+		}
+		if (x == _board->h())
+			end = true;
+	}
+}
+

@@ -24,4 +24,3 @@ int main(){
 //    Input::parseInputStringToInteger("23");
     return 0;
 }
-
