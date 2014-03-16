@@ -1,4 +1,3 @@
-
 #include <algorithm>
 #include "game.h"
 
@@ -105,6 +104,21 @@ action Game::nextAction() {
     return minmax();
 //    return random();
 }
+
+
+//action Game::nextAction() {
+//	action testPruning = minmaxWithPruning();
+//	cout << "Pruning : " << testPruning.type << " | " << testPruning.c.x << " | " << testPruning.c.y << " | " << endl;
+//
+//	action b = minmax();
+//	cout << "Normal : " << b.type << " | " << b.c.x << " | " << b.c.y << " | " << endl;
+//
+//	action testNew = minmaxNew();
+//	cout << "NewHeuristic : " << testNew.type << " | " << testNew.c.x << " | " << testNew.c.y << " | " << endl;
+//
+//	return b;			//previously "return minmax();"
+//	//    return random();
+//}
 
 action Game::random() {
     action a;
@@ -272,9 +286,66 @@ void Game::displayHistoric(){
    else
        cout << "The machine won the game." << endl;
 }
+
 Game::~Game(){
     delete _board;
 }
+
+//
+////Recursive implementation (base on previous heuristic and check only based on the action played
+//int Game::heuristicRecursive(int prevHeurist, action prevAction) const
+//{
+//
+//	//Check around the new action
+//	cell point = prevAction.c;
+//
+//
+//	//We check around the new point while there is not any ennemy point
+//	//if (_board.recur)
+//
+//
+//	//check history length in order to have the number of turns played
+//	int nbturns = _history.size();
+//
+//	for (int i = 0; i < _board->h(); i++)
+//	{
+//		for (int j = 0; j < _board->w(); j++)
+//		{
+//			
+//		}
+//
+//	}
+//	//plus on a de casses libres, plus on a des variations fortes --> d�croissant selon nb tours
+//
+//
+//	//test si on a n-1 elements alignes (avec n le nb de pions necessaires a aligner) avec une case libre sur un bord
+//
+//	//
+//	
+//	//
+//	
+//	//si on a plus de cases dispo, heuristique = 0 (draw)
+//
+//
+//	
+//
+//}
+
+//int Game::heuristicValue(int x, int y) const {
+//    //look around this cell, d cells away, ..., 2 cells away, and 1 cell away
+//    int d = 1;
+//    int value = 0;
+//    //                    for (int d = 2, coef = 1; d >= 0; --d, coef *= 3) {
+//    for (int x2 = std::max(0, x - d); x2 < std::min(_board->h(), x + d); ++x2) {
+//        for (int y2 = std::max(0, y - d); y2 < std::min(_board->h(), y + d); ++y2) {
+//            if (_board->get(x2, y2) == _currentPlayer) {
+//                ++value;
+//            }
+//        }
+//    }
+//    //                    }
+//    return value;
+//}
 
 //
 ////Recursive implementation (base on previous heuristic and check only based on the action played
@@ -373,8 +444,6 @@ double Game::heuristic2()
 						break;
 					}
 
-
-
 					//calculate the heuristic of the box based on its win possibilities
 
 					if (pattern >= _winLength) //Previously pattern size but seems to be the same
@@ -387,12 +456,15 @@ double Game::heuristic2()
 							//we don't have a winner, so we have to calculate the heuristic
 							//1- the more there are points aligned, the more you have chances to win
 							//2- if you have empty box between/next to these points, that's ever better
-							if (chain != 0)
-								heuristics[playerCase] += chain * _winLength + nbHoles / (chain * _winLength);
-							else
-								heuristics[playerCase] += pattern * _winLength;
+								heuristics[playerCase] += chain * _winLength + (pattern - chain - nbHoles) * (_winLength/2 + 1) + nbHoles;
 						}
 					}
+					else
+					{
+						//useless to try because not enough space to win
+						heuristics[playerCase] = 0;
+					}
+
 				}
 			}
 		}
@@ -409,6 +481,84 @@ double Game::heuristic2()
 	//If two cases at n-1 points aligned, instant win (in specific cases)
 
 }
+
+action Game::minmaxNew() {
+	numberOfMinMaxFunctionCalls = 0;
+
+	action a;
+	computeActionWithExtremeValueNew(minmaxDepth, a);
+
+	cout << "numberOfMinMaxFunctionCalls : " << numberOfMinMaxFunctionCalls << endl;
+
+	return a;
+}
+
+int Game::minmaxNew(int depth) {
+	numberOfMinMaxFunctionCalls++;
+
+	//int heuristic = heuristicValue();
+
+	//TEST
+	double heuristic = heuristic2();
+	//cout << "Heuristic = " << test << endl;
+	//
+
+	if (depth == 0 || _board->detectEndgame() != NONE) {
+		return heuristic;
+	}
+	else {
+		action a;
+		int extremeValue = computeActionWithExtremeValueNew(depth, a);
+		if (a.type == ERROR) {
+			return heuristic;
+		}
+		else {
+			return extremeValue;
+		}
+	}
+}
+
+int Game::computeActionWithExtremeValueNew(int depth, action &a) {
+	a.type = ERROR;
+
+	//TODO : have to be initialized
+	int extremeValue = 0;
+
+	// Find the best action
+	for (int x = 0; x < _board->h(); ++x) {
+		for (int y = 0; y < _board->w(); ++y) {
+			if (_board->get(x, y) == NONE) { //for each empty cell
+
+				// Play
+				_board->set(x, y, _currentPlayer);
+				switchPlayer();
+
+				// Evaluate
+				int value = minmaxNew(depth - 1);
+
+				if (a.type == ERROR ||
+					(_currentPlayer == MACHINE && value < extremeValue) ||
+					(_currentPlayer == HUMAN   && value > extremeValue)
+					) {
+					extremeValue = value;
+					a.c.x = x;
+					a.c.y = y;
+					a.type = PLAY;
+				}
+
+				// Get back to former state
+				_board->set(x, y, NONE);
+				switchPlayer();
+			}
+		}
+	}
+
+	return extremeValue;
+}
+
+
+
+
 
 
 
@@ -509,5 +659,11 @@ void Game::computeActionWithPruning(int depth, action &a, int& alpha, int& beta)
 		if (x == _board->h())
 			end = true;
 	}
+}
+
+
+
+Game::~Game(){
+    delete _board;
 }
 

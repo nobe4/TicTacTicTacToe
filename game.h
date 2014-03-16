@@ -35,7 +35,17 @@ private:
 	int minmaxWithPruning(int depth, int alpha, int beta);
 	void computeActionWithPruning(int depth, action &a, int& alpha, int& beta);
 	
+	
+	int minmaxNew(int depth);
+	action minmaxNew();
+	int computeActionWithExtremeValueNew(int depth, action &a);
+
+
+
+
+	
 	double heuristic2();
+
 	int heuristicRecursive(int prevHeurist, action prevAction) const;
 
 
