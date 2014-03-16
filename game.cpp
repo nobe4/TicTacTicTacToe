@@ -664,4 +664,3 @@ void Game::computeActionWithPruning(int depth, action &a, int& alpha, int& beta)
 Game::~Game(){
     delete _board;
 }
-

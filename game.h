@@ -30,7 +30,6 @@ private:
     inline void switchPlayer() {_currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;};
     int computeActionWithExtremeValue(int depth, action &a);
 
-
 	action minmaxWithPruning();
 	int minmaxWithPruning(int depth, int alpha, int beta);
 	void computeActionWithPruning(int depth, action &a, int& alpha, int& beta);
