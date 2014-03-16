@@ -36,9 +36,9 @@ private:
 	void computeActionWithPruning(int depth, action &a, int& alpha, int& beta);
 	
 	
-	int minmaxNew(int depth);
+	double minmaxNew(int depth);
 	action minmaxNew();
-	int computeActionWithExtremeValueNew(int depth, action &a);
+	double computeActionWithExtremeValueNew(int depth, action &a);
 
 
 

@@ -98,7 +98,11 @@ bool Board::isCellWinningTwo(int x, int y, Player current){
 int Board::recursiveCount(int x, int y, int xdirection, int ydirection, Player current){
     x = x + xdirection;
     y = y + ydirection;
-    if((0 <= x) && (x < this->w()) && (0 <= y) && (y < this->h())){
+	//OLD version
+    //if((0 <= x) && (x < this->w()) && (0 <= y) && (y < this->h())){
+	
+	//New one
+	if ((0 <= x) && (x < this->h()) && (0 <= y) && (y < this->w())){
         if(this->_cells[x][y] == current)
             return (recursiveCount(x, y, xdirection, ydirection, current)+1);
         return 0;
@@ -242,8 +246,9 @@ int Board::recursiveCountHoleAllowed(int x, int y, int xdirection, int ydirectio
 	x = x + xdirection;
 
 	y = y + ydirection;
-
-	if ((0 <= x) && (x < this->w()) && (0 <= y) && (y < this->h())){
+	//if((0 <= x) && (x < this->w()) && (0 <= y) && (y < this->h())){
+	//Error when not the same size. May have invert x/y
+	if ((0 <= x) && (x < this->h()) && (0 <= y) && (y < this->w())){
 
 		if ((this->_cells[x][y] == current))
 		{
@@ -269,6 +274,7 @@ int Board::recursiveCountHoleAllowed(int x, int y, int xdirection, int ydirectio
 
 	return 0;
 }
+
 //
 //bool Board::playerCanWin(int x, int y, Player current, vector<int>& possibilities){
 //

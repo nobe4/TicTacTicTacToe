@@ -100,25 +100,25 @@ ACTION_TYPE Game::newMove(){
     return a.type;
 }
 
-action Game::nextAction() {
-    return minmax();
-//    return random();
-}
-
-
 //action Game::nextAction() {
-//	action testPruning = minmaxWithPruning();
-//	cout << "Pruning : " << testPruning.type << " | " << testPruning.c.x << " | " << testPruning.c.y << " | " << endl;
-//
-//	action b = minmax();
-//	cout << "Normal : " << b.type << " | " << b.c.x << " | " << b.c.y << " | " << endl;
-//
-//	action testNew = minmaxNew();
-//	cout << "NewHeuristic : " << testNew.type << " | " << testNew.c.x << " | " << testNew.c.y << " | " << endl;
-//
-//	return b;			//previously "return minmax();"
-//	//    return random();
+//    return minmax();
+////    return random();
 //}
+
+
+action Game::nextAction() {
+	action testPruning = minmaxWithPruning();
+	cout << "Pruning : " << testPruning.type << " | " << testPruning.cell.line << " | " << testPruning.cell.col << " | " << endl;
+
+	action b = minmax();
+	cout << "Normal : " << b.type << " | " << b.cell.line << " | " << b.cell.col << " | " << endl;
+
+	action testNew = minmaxNew();
+	cout << "NewHeuristic : " << testNew.type << " | " << testNew.cell.line << " | " << testNew.cell.col << " | " << endl;
+
+	return b;			//previously "return minmax();"
+	//    return random();
+}
 
 action Game::random() {
     action a;
@@ -184,7 +184,7 @@ int Game::heuristicValue() const {
                 }
             }
             
-            cout << value << endl;
+            //cout << value << endl;
             return value;
             break;
     }
@@ -263,7 +263,7 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
 void Game::displayHistoric(){
     bool playerPlaying = (_firstPlayer == HUMAN);
 
-   for(int i = 0; i < this->_history.size(); i++){
+   for(unsigned int i = 0; i < this->_history.size(); i++){
         if(this->_history.at(i).type == PLAY){
             if(playerPlaying == true){
                 cout << "The player  played : \t(" << this->_history.at(i).cell.col << ", " << this->_history.at(i).cell.line << ")" << endl;
@@ -287,9 +287,7 @@ void Game::displayHistoric(){
        cout << "The machine won the game." << endl;
 }
 
-Game::~Game(){
-    delete _board;
-}
+
 
 //
 ////Recursive implementation (base on previous heuristic and check only based on the action played
@@ -493,7 +491,7 @@ action Game::minmaxNew() {
 	return a;
 }
 
-int Game::minmaxNew(int depth) {
+double Game::minmaxNew(int depth) {
 	numberOfMinMaxFunctionCalls++;
 
 	//int heuristic = heuristicValue();
@@ -508,7 +506,7 @@ int Game::minmaxNew(int depth) {
 	}
 	else {
 		action a;
-		int extremeValue = computeActionWithExtremeValueNew(depth, a);
+		double extremeValue = computeActionWithExtremeValueNew(depth, a);
 		if (a.type == ERROR) {
 			return heuristic;
 		}
@@ -518,11 +516,11 @@ int Game::minmaxNew(int depth) {
 	}
 }
 
-int Game::computeActionWithExtremeValueNew(int depth, action &a) {
+double Game::computeActionWithExtremeValueNew(int depth, action &a) {
 	a.type = ERROR;
 
 	//TODO : have to be initialized
-	int extremeValue = 0;
+	double extremeValue = 0;
 
 	// Find the best action
 	for (int x = 0; x < _board->h(); ++x) {
@@ -534,15 +532,15 @@ int Game::computeActionWithExtremeValueNew(int depth, action &a) {
 				switchPlayer();
 
 				// Evaluate
-				int value = minmaxNew(depth - 1);
+				double value = minmaxNew(depth - 1);
 
 				if (a.type == ERROR ||
 					(_currentPlayer == MACHINE && value < extremeValue) ||
 					(_currentPlayer == HUMAN   && value > extremeValue)
 					) {
 					extremeValue = value;
-					a.c.x = x;
-					a.c.y = y;
+					a.cell.line = x;
+					a.cell.col = y;
 					a.type = PLAY;
 				}
 
@@ -640,8 +638,8 @@ void Game::computeActionWithPruning(int depth, action &a, int& alpha, int& beta)
 					alpha = value;
 				//else
 
-				a.c.x = x;
-				a.c.y = y;
+				a.cell.line = x;
+				a.cell.col = y;
 				a.type = PLAY;
 			}
 
