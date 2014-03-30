@@ -123,68 +123,23 @@ bool Board::isCellWinning(int x, int y){
     bool winning = false;
     int i = 0;
 
-    // horizontal check
-    if(y < this->h() - _patternSize + 1){
-//         cout << "Horizontal check : " << x << " " << y <<endl ;
-        winning = true;
-        i = 0;
-        do{
-//             cout <<             x + _horizontalPattern.at(i).dx << " : " << y + _horizontalPattern.at(i).dy     << " => "
-//                  << this->get(  x + _horizontalPattern.at(i).dx ,           y + _horizontalPattern.at(i).dy)    << " ?= " << value << endl;
-            if(this->get(x + _horizontalPattern.at(i).dx , y + _horizontalPattern.at(i).dy) != value){
-                winning = false;
-            }
-            ++i;
-        }while(i < this->_patternSize && winning == true);
-    }
+    Player current = this->get(x,y);
 
-    // vertical check
-    if(x < this->w() - _patternSize + 1 && winning == false){
-//         cout << "Vertical check : " << x << " " << y <<endl ;
-        winning = true;
-        i = 0;
-        do{
-//             cout <<             x + _verticalPattern.at(i).dx << " : " << y + _verticalPattern.at(i).dy     << " => "
-//                  << this->get(  x + _verticalPattern.at(i).dx ,           y + _verticalPattern.at(i).dy)    << " ?= " << value << endl;
-            if(this->get(x + _verticalPattern.at(i).dx , y + _verticalPattern.at(i).dy) != value){
-                winning = false;
-            }
-            ++i;
-        }while(i < this->_patternSize && winning == true);
-    }
+    if((recursiveCount(x, y, 0, -1, current) + 1 + recursiveCount(x, y, 0, 1, current) >= this->_patternSize))
+        winning =  true;
+        //Vertical win
 
-    // diagoR check
-    if(x < this->w() - _patternSize + 1 && y < this->h() - _patternSize + 1 && winning == false){
-//         cout << "Diago Rigth check : " << x << " " << y <<endl ;
-        winning = true;
-        i = 0;
-        do{
-//             cout <<             x + _diagoRigthPattern.at(i).dx << " : " << y + _diagoRigthPattern.at(i).dy     << " => "
-//                  << this->get(  x + _diagoRigthPattern.at(i).dx ,           y + _diagoRigthPattern.at(i).dy)    << " ?= " << value << endl;
-            if(this->get(x + _diagoRigthPattern.at(i).dx , y + _diagoRigthPattern.at(i).dy) != value){
-                winning = false;
-            }
-            ++i;
-        }while(i < this->_patternSize && winning == true);
-    }
+    if((recursiveCount(x, y, 1, -1, current) + 1 + recursiveCount(x, y, -1, 1, current) >= this->_patternSize))
+        winning =  true;
+        //bottom left to up right win
 
-    // diagoL check
-    if(x < this->w() - _patternSize + 1 && y < this->h() - _patternSize + 1 && winning == false){
-//        cout << "Diago Left check : " << x << " " << y <<endl ;
-        value = this->get(x + _diagoLeftPattern.at(0).dx , y + _diagoLeftPattern.at(0).dy); // update the value
-        if(value != NONE){
-            winning = true;
-            i = 0;
-            do{
-//                 cout <<             x + _diagoLeftPattern.at(i).dx << " : " << y + _diagoLeftPattern.at(i).dy     << " => "
-//                      << this->get(  x + _diagoLeftPattern.at(i).dx ,           y + _diagoLeftPattern.at(i).dy)    << " ?= " << value << endl;
-                if(this->get(x + _diagoLeftPattern.at(i).dx , y + _diagoLeftPattern.at(i).dy) != value){
-                    winning = false;
-                }
-                ++i;
-            }while(i < this->_patternSize && winning == true);
-        }
-    }
+    if((recursiveCount(x, y, 1, 0, current) + 1 + recursiveCount(x, y, -1, 0, current) >= this->_patternSize))
+        winning =  true;
+        //Horizontal win
+
+    if((recursiveCount(x, y, 1, 1, current) + 1 + recursiveCount(x, y, -1, -1, current) >= this->_patternSize))
+        winning =  true;
+        //up left to bottom right win
 
     return winning;
 }
