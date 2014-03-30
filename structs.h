@@ -36,7 +36,7 @@ inline std::string str(Player p) {
  * @brief The cell structure handle position of a cell in the matrix (does not handle integrity verifications)
  */
 typedef struct _cell{
-    int col, line;
+	int line, col;
 }Cell;
 
 typedef struct _action{

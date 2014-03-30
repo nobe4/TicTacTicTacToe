@@ -119,8 +119,18 @@ public:
      */
     int recursiveCount(int x, int y, int xdirection, int ydirection, Player current);
 
+	/**
+	* @brief 
+	* @param 
+	* @return
+	*/
 	bool playerCanWin(int x, int y, Player current, vector<int>& possibilities);
 
+	/**
+	* @brief
+	* @param
+	* @return
+	*/
 	int recursiveCountHoleAllowed(int x, int y, int xdirection, int ydirection, Player current, int& nbHoles, int& chain);
 
 

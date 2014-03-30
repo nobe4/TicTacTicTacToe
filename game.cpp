@@ -38,7 +38,7 @@ void Game::gameLoop(){
 
         Output::displayBoard(this->_board);
         
-        bool winner2 = _board->detectEndgame2(lastAction.cell.col,lastAction.cell.line);
+        bool winner2 = _board->detectEndgame2(lastAction.cell.line,lastAction.cell.col);
         if(winner2){
             cout << "End game" << endl;
             cont = false;
@@ -78,7 +78,7 @@ ACTION_TYPE Game::newMove(){
                 cout << "/!\\ Error : cell out of the matrix" << endl;
                 a.type = ERROR;
             }else{
-                if(this->_board->get(a.cell.col,a.cell.line) != NONE){ // if the cell is not empty
+                if(this->_board->get(a.cell.line,a.cell.col) != NONE){ // if the cell is not empty
                     cout << "/!\\ Error : cell is not empty" << endl;
                     a.type = ERROR;
                 }
@@ -93,7 +93,7 @@ ACTION_TYPE Game::newMove(){
     
     if (a.type == PLAY) {
         this->_history.push_back(a);
-        this->_board->set(a.cell.col, a.cell.line, _currentPlayer);
+        this->_board->set(a.cell.line, a.cell.col, _currentPlayer);
         switchPlayer();
     }
     
@@ -114,9 +114,9 @@ action Game::nextAction() {
 	cout << "Normal : " << b.type << " | " << b.cell.line << " | " << b.cell.col << " | " << endl;
 
 	action testNew = minmaxNew();
-	cout << "NewHeuristic : " << testNew.type << " | " << testNew.cell.line << " | " << testNew.cell.col << " | " << endl;
+	cout << "NewHeuristic (PLAYED): " << testNew.type << " | " << testNew.cell.line << " | " << testNew.cell.col << " | " << endl;
 
-	return b;			//previously "return minmax();"
+	return testNew;			//previously "return minmax();"
 	//    return random();
 }
 
@@ -245,8 +245,8 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
                     (_currentPlayer == MACHINE && value < extremeValue) ||
                     (_currentPlayer == HUMAN   && value > extremeValue)) {
                     extremeValue = value;
-                    a.cell.col = x;
-                    a.cell.line = y;
+                    a.cell.line = x;
+                    a.cell.col = y;
                     a.type = PLAY;
                 }
                 
@@ -573,6 +573,38 @@ action Game::minmaxWithPruning() {
 
 	return a;
 }
+
+
+//action Game::minmaxWithPruning() {
+//	numberOfMinMaxFunctionCalls = 0;
+//
+//	action a;
+//	int alpha = std::numeric_limits<int>::min();
+//	int beta = std::numeric_limits<int>::max();
+//	int out = 
+//
+//	for (int x = 0; x < _board->h(); ++x) {
+//	{
+//		for (int y = 0; y < _board->w(); ++y)
+//		{
+//			//Reset alpha/beta values
+//			alpha = std::numeric_limits<int>::min();
+//			beta = std::numeric_limits<int>::max();
+//
+//			//Call minmax with independent reset alpha/beta values 
+//			//(i.e independent minmax for all root childs.
+//			minmaxWithPruning(minmaxDepth, alpha, beta);
+//			//computeActionWithPruning(minmaxDepth, a, alpha, beta);
+//			cout << "numberOfMinMaxFunctionCalls (with Pruning): " << numberOfMinMaxFunctionCalls << endl;
+//		}
+//	}
+//
+//
+//	
+//
+//	return a;
+//}
+
 
 int Game::minmaxWithPruning(int depth, int alpha, int beta) {
 	numberOfMinMaxFunctionCalls++;

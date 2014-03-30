@@ -28,15 +28,41 @@ private:
      * @brief switches _currentPlayer from MACHINE to human, and the opposite.
      */
     inline void switchPlayer() {_currentPlayer = _currentPlayer == HUMAN ? MACHINE : HUMAN;};
-    int computeActionWithExtremeValue(int depth, action &a);
+    
+	/**
+	* @brief 
+	*/
+	int computeActionWithExtremeValue(int depth, action &a);
 
+	/**
+	* @brief
+	*/
 	action minmaxWithPruning();
+
+	/**
+	* @brief
+	*/
 	int minmaxWithPruning(int depth, int alpha, int beta);
+	
+	/**
+	* @brief
+	*/
 	void computeActionWithPruning(int depth, action &a, int& alpha, int& beta);
 	
 	
+	/**
+	* @brief MinMax with the second heuristic.
+	*/
 	double minmaxNew(int depth);
+
+	/**
+	* @brief MinMax with the second heuristic.
+	*/
 	action minmaxNew();
+
+	/**
+	* @brief Function used during MinMax with the second heuristic.
+	*/
 	double computeActionWithExtremeValueNew(int depth, action &a);
 
 
