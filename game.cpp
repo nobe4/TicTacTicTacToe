@@ -14,14 +14,14 @@ void Game::Initialisation(){
     // set min to be the minimal of board width and board heigth
     int min = _board->h();
     if(_board->w() < min) min = _board->w();
-    
+
     // initialisation of minimal length to win
     _winLength = Input::inputWinLength(min);
 
     _board->createPatterns(_winLength);
     // choice of the first player
     // by default it's the human
-    
+
     minmaxDepth = Input::getMinMaxDepth();
 
     _firstPlayer= Input::inputFirstPLayer();
@@ -37,7 +37,7 @@ void Game::gameLoop(){
         action lastAction = (this->_history.at(this->_history.size() - 1)); // get last move played
 
         Output::displayBoard(this->_board);
-        
+
         bool winner2 = _board->detectEndgame2(lastAction.cell.col,lastAction.cell.line);
         if(winner2){
             cout << "End game" << endl;
@@ -45,8 +45,15 @@ void Game::gameLoop(){
         }
 
         if(this->_history.size() == (unsigned int) this->_board->h()*this->_board->w()){
-            cout << "End of game with a draw because no more space is available !" << endl;
-            cont = false;
+            //CHeck que le plateau ne soit pas gagnant
+            bool winner2 = _board->detectEndgame2(lastAction.cell.col,lastAction.cell.line);
+            if(winner2){
+                cont = false;
+            }
+            else{
+                cout << "End of game with a draw because no more space is available !" << endl;
+                cont = false;
+            }
         }
     }
 
@@ -62,13 +69,13 @@ void Game::gameLoop(){
 ACTION_TYPE Game::newMove(){
     cout << "##################################################" << endl;
     cout << "New move for the " << str(_currentPlayer) << endl;
-    
+
     action a;
     a.type = ERROR;
-    
+
     if(_currentPlayer == HUMAN) {
         a = Input::inputAction();
-        
+
         if(a.type == QUIT){ // if action is quitting
             cout << "Thanks for playing !" << endl;
         }else if(a.type == ERROR){ // if there is an error in the action
@@ -90,13 +97,13 @@ ACTION_TYPE Game::newMove(){
     }else{
         a = nextAction();
     }
-    
+
     if (a.type == PLAY) {
         this->_history.push_back(a);
         this->_board->set(a.cell.col, a.cell.line, _currentPlayer);
         switchPlayer();
     }
-    
+
     return a.type;
 }
 
@@ -122,22 +129,6 @@ action Game::random() {
     return a;
 }
 
-//int Game::heuristicValue(int x, int y) const {
-//    //look around this cell, d cells away, ..., 2 cells away, and 1 cell away
-//    int d = 1;
-//    int value = 0;
-//    //                    for (int d = 2, coef = 1; d >= 0; --d, coef *= 3) {
-//    for (int x2 = std::max(0, x - d); x2 < std::min(_board->h(), x + d); ++x2) {
-//        for (int y2 = std::max(0, y - d); y2 < std::min(_board->h(), y + d); ++y2) {
-//            if (_board->get(x2, y2) == _currentPlayer) {
-//                ++value;
-//            }
-//        }
-//    }
-//    //                    }
-//    return value;
-//}
-
 int Game::heuristicValue() const {
     Player winner = _board->detectEndgame();
     switch (winner) {
@@ -150,10 +141,10 @@ int Game::heuristicValue() const {
         default:
             int d = 1;
             int value = 50;
-            
+
             for (int x = 0; x < _board->h(); ++x) {
                 for (int y = 0; y < _board->w(); ++y) {
-                    
+
                     //                    for (int d = 2, coef = 1; d >= 0; --d, coef *= 3) {
                     for (int x2 = std::max(0, x - d); x2 < std::min(_board->h(), x + d); ++x2) {
                         for (int y2 = std::max(0, y - d); y2 < std::min(_board->h(), y + d); ++y2) {
@@ -165,11 +156,11 @@ int Game::heuristicValue() const {
                         }
                     }
                     //                    }
-                    
+
                 }
             }
-            
-            cout << value << endl;
+
+            //cout << value << endl;
             return value;
             break;
     }
@@ -177,20 +168,20 @@ int Game::heuristicValue() const {
 
 action Game::minmax() {
     numberOfMinMaxFunctionCalls = 0;
-    
+
     action a;
     computeActionWithExtremeValue(minmaxDepth, a);
-    
+
     cout << "numberOfMinMaxFunctionCalls : " << numberOfMinMaxFunctionCalls << endl;
-    
+
     return a;
 }
 
 int Game::minmax(int depth) {
     numberOfMinMaxFunctionCalls++;
-    
+
     int heuristic = heuristicValue();
-    
+
     // if we've reached maximum depth or if a player wins
     if (depth == 0 || _board->detectEndgame() != NONE) {
         return heuristic;
@@ -213,19 +204,19 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
     // because a.type will be ERROR.
     // We initialize it here, with whatever value, to make sure that Visual Studio debuger will shut up.
     int extremeValue = 0;
-    
+
     // Find the best action
     for (int x = 0; x < _board->h(); ++x) {
         for (int y = 0; y < _board->w(); ++y) {
             if (_board->get(x, y) == NONE) { //for each empty cell
-                
+
                 // Play
                 _board->set(x, y, _currentPlayer);
                 switchPlayer();
-                
+
                 // Evaluate
                 int value = minmax(depth - 1);
-                
+
                 if (a.type == ERROR ||
                     (_currentPlayer == MACHINE && value < extremeValue) ||
                     (_currentPlayer == HUMAN   && value > extremeValue)) {
@@ -234,14 +225,14 @@ int Game::computeActionWithExtremeValue(int depth, action &a) {
                     a.cell.line = y;
                     a.type = PLAY;
                 }
-                
+
                 // Get back to former state
                 _board->set(x, y, NONE);
                 switchPlayer();
             }
         }
     }
-    
+
     return extremeValue;
 }
 
